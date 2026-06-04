@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_darog_bill">
+        <t t-call="web.basic_layout">
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap');
+                @page{
+                    size: A4;
+                    margin-top: 1.5in !important;
+                    margin-bottom: 1.5in !important;
+                    margin-left: 1.5in !important;
+                    margin-right: 1.5in !important;
+                    padding-right: 1.5in !important;
+                    padding-left: 1.5in !important;
+                }
+                .page{
+                    width: 100%;
+                    height: 100%;
+                    font-family: "Times New Roman", Times,"Tinos",serif !important;
+                    font-size:15px;
+                    padding: 0.5in !important;
+                }
+                body{
+                    margin: 0 !important;
+                }
+            </style>
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <h1 style="text-align: center; font-weight: bold; padding-bottom: 20px; padding-top: 150px; padding-bottom: 70px;"><u>BILL OF EXCHANGE</u></h1>
+                    <table style="border: 0px solid white;border-collapse: collapse; width: 100%;">
+                        <tr>
+                            <td style="text-align:left;">DC/CI/<t t-esc="o.invoice_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></td>
+                            <td style="text-align: right;">Date: <t t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;">For <u>USD <t t-esc="o.total_amount"/></u></td>
+                        </tr>
+                    </table>
+                    <table style="border: 0px solid white;border-collapse: collapse; width: 100%;">
+                        <tr>
+                            <td style="text-transform: none;">At <t t-esc="o.payment_within"/> <strong>Days</strong> <i>Sight of this</i> <strong>FIRST</strong> <i>Bill Of Exchange</i> ( <i><strong> SECOND </strong> of the same tenor and date being unpaid</i> )</td>
+                        </tr>
+                        <tr>
+                            <td>Pay to <strong>Uttara Bank Ltd, Banijya Shakha, 34,Garib-E-Newaz Avenue, Sector#13, Uttara, Dhaka-1230. OR </strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Order the SUM of (USD$ <t t-esc="o.amount_in_words"/>) </strong> Value</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recieved &amp; Charge </strong>The Same To account Of <strong><t t-esc="o.reciepent_id.name.replace('.',',')"/> </strong><t t-esc="o.reciepent_id.address.replace(',',', ')"/>, DRAWN UNDER LETTER OF <strong>CREDIT NO: <t t-esc="o.lc_no"/> DATE: <t t-esc="o.incoming_date.strftime('%d.%m.%Y')"/>.</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>EXPORT L/C OR SC NO : <span style="padding-right: 10px;"><t t-esc="o.export_lc_no"/> </span> DATE:<span style="padding-right: 10px;"><t t-esc="o.export_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                        </tr>
+                    </table>
+                    <div style="padding-top: 20px;">
+                        <table style="border: 0px solid white;border-collapse: collapse;">
+                            <t t-set="cnt" t-value="0"/>
+                            <t t-if="o.tin_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS TIN NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"><t t-esc="o.reciepent_id.tin_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>TIN NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.tin_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="o.bin_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS BIN NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.bin_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>BIN NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.bin_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="o.irc_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS IRC NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.irc_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>IRC NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.irc_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="o.erc_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS ERC NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.erc_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>ERC NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.erc_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="o.bond_reg_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS BOND REG. NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.bond_reg_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>BOND REG. NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.bond_reg_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="o.bb_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>ISSUING BANK BIN NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.bank_id.bank_bin"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>ISSUING BANK BIN NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.bank_id.bank_bin"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                        </table>
+                    </div>
+                    <table style="border: 0px solid white;border-collapse: collapse; width: 100%;">
+                        <tr>
+                            <td> <strong>BENEFICIARYS BIN NO : 000008386-0301</strong> </td>
+                        </tr>
+                        <tr>
+                            <td><strong> H.S. CODE NO : 6217.10.00</strong></td>
+                        </tr>
+                    </table>
+                    <div class="row" style="padding-top: 50px;">
+                        <table style="border: 0px solid white;border-collapse: collapse;width: 100%; padding-top: 50px;">
+                            <tr>
+                                <td style="text-align: left;"><strong>TO: </strong></td>
+                                <td style="text-align: right;"><strong> DAROG CORPORATION </strong></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;"><strong><span t-field="o.reciepent_id.bank_id.name"/></strong></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;vertical-align: top;padding: 0px;"><strong><span t-field="o.reciepent_id.bank_id.address"/></strong></td>
+                                <td style="text-align:right; vertical-align: bottom;"><strong>Authorized Signature</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div style="page-break-before: always;"></div>
+                <div class="page">
+                    <h1 style="text-align: center; font-weight: bold; padding-bottom: 20px; padding-top: 150px; padding-bottom: 70px;"><u>BILL OF EXCHANGE</u></h1>
+                    <table style="border: 0px solid white;border-collapse: collapse; width: 100%;">
+                        <tr>
+                            <td style="text-align:left;">DC/CI/<t t-esc="o.incoming_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></td>
+                            <td style="text-align: right;">Date : <t t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;">For <u>USD <t t-esc="o.total_amount"/></u></td>
+                        </tr>
+                    </table>
+                    <table style="border: 0px solid white;border-collapse: collapse; width: 100%;">
+                        <tr>
+                            <td style="text-transform: none;">At <t t-esc="o.payment_within"/> <strong>Days</strong> <i>Sight of this</i> <strong>SECOND</strong> <i>Bill Of Exchange</i> ( <i><strong> FIRST </strong> of the same tenor and date being unpaid</i> )</td>
+                        </tr>
+                        <tr>
+                            <td>Pay to <strong>Uttara Bank Ltd, Banijya Shakha, 34, Garib-E-Newaz Avenue, Sector#13, Uttara, Dhaka-1230. OR </strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Order the SUM of (USD$ <t t-esc="o.amount_in_words"/>) </strong> Value</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recieved &amp; Charge </strong>The Same To account Of <strong><t t-esc="o.reciepent_id.name.replace('.',',')"/></strong><t t-esc="o.reciepent_id.address.replace(',',', ')"/>, DRAWN UNDER LETTER OF <strong>CREDIT NO : <t t-esc="o.lc_no"/> DATE : <t t-esc="o.incoming_date.strftime('%d.%m.%Y')"/>.</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>EXPORT L/C OR SC NO : <span style="padding-right: 10px;"><t t-esc="o.export_lc_no"/></span> DATE : <span style="padding-right: 10px;"><t t-esc="o.export_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                        </tr>
+                    </table>
+                    <div style="padding-top: 20px;">
+                        <table style="border: 0px solid white;border-collapse: collapse;">
+                            <t t-set="cnt" t-value="0"/>
+                            <t t-if="o.tin_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS TIN NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.tin_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>TIN NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.tin_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="o.bin_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS BIN NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.bin_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>BIN NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.bin_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="o.irc_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS IRC NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.irc_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>IRC NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.irc_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="o.erc_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS ERC NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.erc_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>ERC NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.erc_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="o.bond_reg_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS BOND REG. NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.bond_reg_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>BOND REG. NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.bond_reg_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-if="o.bb_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS BB NO : </strong></td>
+                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.bb_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>BB NO : </strong></td>
+                                        <td style="text-align:left;"><t t-esc="o.reciepent_id.bb_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
+                        </table>
+                    </div>
+                    <table style="border: 0px solid white;border-collapse: collapse; width: 100%;">
+                        <tr>
+                            <td> <strong>BENEFICIARYS BIN NO : 000008386-0301</strong> </td>
+                        </tr>
+                        <tr>
+                            <td><strong> H.S. CODE NO : 6217.10.00</strong></td>
+                        </tr>
+                    </table>
+                    <div class="row" style="padding-top: 50px;">
+                        <table style="border: 0px solid white;border-collapse: collapse;width: 100%; padding-top: 50px;">
+                            <tr>
+                                <td style="text-align: left;"><strong>TO: </strong></td>
+                                <td style="text-align: right;"><strong> DAROG CORPORATION </strong></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;"><strong><span t-field="o.reciepent_id.bank_id.name"/></strong></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;vertical-align: top;padding: 0px;"><strong><span t-field="o.reciepent_id.bank_id.address"/></strong></td>
+                                <td style="text-align:right; vertical-align: bottom;"><strong>Authorized Signature</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

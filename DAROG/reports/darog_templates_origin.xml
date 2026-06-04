@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_darog_origin">
+        <t t-call="web.basic_layout">
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap');
+                @page{
+                    size: A4;
+                    margin: 0.5in !important;
+                }
+                .page{
+                    width: 100%;
+                    height: 100%;
+                    font-family: "Times New Roman", Times,"Tinos",serif !important;
+                    font-size: 14px;
+                    padding-left: 0.5in !important;
+                    padding-right: 0.5in !important;
+                }
+                .logo{
+                    text-align: center;
+                    margin-top:0 !important;
+                    padding: 0 !important;
+                    border-bottom: 2px solid black;
+                    margin-bottom: 20px;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    overflow: hidden;
+                }
+                .logo img{
+                    max-width:100%;
+                    width:100%;
+                    height: auto;
+                }
+                .cert-title-rotated {
+                    text-align: center;
+                }
+                .faka{
+                    padding-top: 30px;
+                }
+            </style>
+            <t t-foreach="docs" t-as="o">
+                <div style="padding-top: 250px !important;">
+                    <!-- <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" alt="Comapny Logo" style="width:100%;height:auto;display:block"/> -->
+                </div>
+                <!--
+                <div style="align-items: center; display: flex; justify-content: center; height: auto;width: 100%;">
+                    <img t-att-src="image_data_uri(o.company_id.certificate)" alt="Certificate of Origin" class="wave" style="margin: 0 auto; width: 60%; max-width: 400px; object-position: center; height: auto;"/>
+                </div>
+                -->
+                <div style="width: 100%; text-align: center; margin-bottom: 50px;">
+                    <img t-att-src="image_data_uri(o.company_id.certificate)"
+                        alt="Certificate of Origin"
+                        style="width: 70%; height: auto; display: inline-block;"/>
+                </div>
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <table style="border: 0px solid white !important; width: 100%; border-collapse: collapse;">
+                            <tr >
+                                <td style="text-align: left;" class="faka">DATE : <span style="padding-left: 5px;"><t t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/></span></td>
+                                <td style="padding-left: 50px;" class="faka"> DC/CI/<t t-esc="o.invoice_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/>. </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;" class="faka">LETTER OF CREDIT NO.</td>
+                                <td class="faka">:<strong><span style="padding-left: 30px;"><t t-esc="o.lc_no"/></span><span style="padding-left: 20px;">DATE : <t t-esc="o.incoming_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                            </tr>
+                            <tr>
+                                <td class="faka">L/C ISSUING BANK NAME</td>
+                                <td class="faka">:<span style="padding-left: 30px;"><t t-esc="o.reciepent_id.bank_id.name"/></span></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="padding-left: 32px;"><span t-field="o.reciepent_id.bank_id.address"/></td>
+                            </tr>
+                            <tr>
+                                <td class="faka"> APPLICANT</td>
+                                <td class="faka">:<strong><span style="padding-left: 30px;"><t t-esc="o.reciepent_id.name"/></span></strong></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="padding-left: 32px;"><span t-field="o.reciepent_id.address"/>.</td>
+                            </tr>
+                            <tr>
+                                <td class="faka"> INVOICE NO. </td>
+                                <td class="faka">:<span style="padding-left: 30px;"><strong>DC/<t t-esc="o.invoice_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/><span style="padding-left: 20px;">DATE : <t t-esc="o.invoice_date.strftime('%d.%m.%Y')"/></span>.</strong></span></td>
+                            </tr>
+                            <tr>
+                                <td class="faka"> QUANTITY </td>
+                                <td class="faka">:<strong><span style="padding-left: 30px;"><t t-esc="o.total_quantity"/></span> DZN <t t-if="o.total_roll &gt; 0">+ <t t-esc="o.total_roll"/> ROLL </t></strong></td>
+                            </tr>
+                            <tr>
+                                <td class="faka"> EXPORT L/C OR S/C NO. </td>
+                                <td class="faka">:<strong><span style="padding-left: 30px;"><t t-esc="o.export_lc_no"/></span></strong></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="padding-left: 32px; padding-bottom: 10px;"><span><strong>DATE : <t t-esc="o.export_date.strftime('%d.%m.%Y')"/></strong></span></td>
+                            </tr>
+                                    <t t-set="cnt" t-value="0"/>
+                                    <t t-if="o.tin_no_needed">
+                                        <t t-if="cnt == 0">
+                                            <tr>
+                                                <td style="white-space: nowrap;"><strong>APPLICANTS TIN NO  </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.tin_no"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                        <t t-elif="cnt &gt; 0">
+                                            <tr>
+                                                <td><strong>TIN NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.tin_no"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="o.bin_no_needed">
+                                        <t t-if="cnt == 0">
+                                            <tr>
+                                                <td style="white-space: nowrap;"><strong>APPLICANTS BIN NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.bin_no"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                        <t t-elif="cnt &gt; 0">
+                                            <tr>
+                                                <td><strong>BIN NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.bin_no"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="o.irc_no_needed">
+                                        <t t-if="cnt == 0">
+                                            <tr>
+                                                <td style="white-space: nowrap;"><strong>APPLICANTS IRC NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.irc_no"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                        <t t-elif="cnt &gt; 0">
+                                            <tr>
+                                                <td><strong>IRC NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.irc_no"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="o.erc_no_needed">
+                                        <t t-if="cnt == 0">
+                                            <tr>
+                                                <td style="white-space: nowrap;"><strong>APPLICANTS ERC NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.erc_no"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                        <t t-elif="cnt &gt; 0">
+                                            <tr>
+                                                <td><strong>ERC NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.erc_no"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="o.bond_reg_no_needed">
+                                        <t t-if="cnt == 0">
+                                            <tr>
+                                                <td style="white-space: nowrap;"><strong>APPLICANTS BOND REG. NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.bond_reg_no"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                        <t t-elif="cnt &gt; 0">
+                                            <tr>
+                                                <td><strong>BOND REG. NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.bond_reg_no"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="o.bb_no_needed">
+                                        <t t-if="cnt == 0">
+                                        <tr>
+                                                <td style="white-space: nowrap;"><strong>ISSUING BANK BIN NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.bank_id.bank_bin"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                        <t t-elif="cnt &gt; 0">
+                                            <tr>
+                                                <td><strong>ISSUING BANK BIN NO </strong></td>
+                                                <td>:<strong style=" padding-left: 30px;"><t t-esc="o.reciepent_id.bank_id.bank_bin"/></strong></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                    </t>
+                            <tr>
+                                <td> BENEFICIARY BIN NO. </td>
+                                <td>:<span style="padding-left: 30px;">000008386-0301</span>.</td>
+                            </tr>
+                            <tr>
+                                <td> H.S. CODE NO </td>
+                                <td>:<span style="padding-left: 30px;"><t t-esc="o.company_id.hs_code"/></span> </td>
+                            </tr>
+                            <tr>
+                                <td class="faka"> VALUE </td>
+                                <td class="faka">:<span style="padding-left: 30px;">USD <t t-esc="o.total_amount"/></span> </td>
+                            </tr>
+                            <tr>
+                                <td class="faka"> DESCRIPTION OF GOODS </td>
+                                <td class="faka">:
+                                    <span style="padding-left: 28px;">
+                                        <t t-set="cnt" t-value="0"/>
+                                        <t t-set="total" t-value="len(o.items_id)"/>
+                                        <t t-set="poly" t-value="False"/>
+                                        <t t-set="tissue" t-value="False"/>
+                                        <t t-set="paper" t-value="False"/>
+                                        <t t-set="collar" t-value="False"/>
+                                        <t t-set="gumtape" t-value="False"/>
+                                        <t t-foreach="o.items_id" t-as="item">
+                                            <t t-if="item_first">
+                                                <t t-if="item.name  in ['PRE-PACK: MILKY WHITE','PRINTED POLY: MILKY WHITE'] and poly == False">
+                                                    <span>POLY BAG</span>
+                                                    <t t-set="poly" t-value="True"/>
+                                                </t>
+                                                <t t-elif="item.name in ['TISSUE','TISSUE PAPER'] and tissue == False">
+                                                    <span>TISSUE</span>
+                                                    <t t-set="tissue" t-value="True"/>
+                                                </t>
+                                                <t t-elif="item.name in ['COLLAR BAND: 350 GSM'] and collar == False">
+                                                    <span>COLLAR BAND</span>
+                                                    <t t-set="collar" t-value="True"/>
+                                                </t>
+                                                <t t-elif="item.name in ['CARD BOARD: W/B-350 GSM.','CARD BOARD: W/BACK-400 GSM.','PAPER BOARD: DOUBLE THICK'] and paper == False">
+                                                    <span>PAPER BOARD</span>
+                                                    <t t-set="paper" t-value="True"/>
+                                                </t>
+                                                <t t-elif="item.name in ['PAPER GUMTAPE'] and gumtape == False">
+                                                    <span>GUMTAPE</span>
+                                                </t>
+                                            </t>
+                                            <t t-if="not item_last">
+                                                <t t-if="item.name  in ['PRE-PACK: MILKY WHITE','PRINTED POLY: MILKY WHITE'] and poly == False">
+                                                    <span>, POLY BAG</span>
+                                                    <t t-set="poly" t-value="True"/>
+                                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                                </t>
+                                                <t t-elif="item.name in ['TISSUE','TISSUE PAPER'] and tissue == False">
+                                                    <span>, TISSUE</span>
+                                                    <t t-set="tissue" t-value="True"/>
+                                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                                </t>
+                                                <t t-elif="item.name in ['COLLAR BAND: 350 GSM'] and collar == False">
+                                                    <span>, COLLAR BAND</span>
+                                                    <t t-set="collar" t-value="True"/>
+                                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                                </t>
+                                                <t t-elif="item.name in ['CARD BOARD: W/B-350 GSM.','CARD BOARD: W/BACK-400 GSM.','PAPER BOARD: DOUBLE THICK'] and paper == False">
+                                                    <span>, PAPER BOARD</span>
+                                                    <t t-set="paper" t-value="True"/>
+                                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                                </t>
+                                                <t t-elif="item.name in ['PAPER GUMTAPE'] and gumtape == False">
+                                                    <span>, GUMTAPE</span>
+                                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                                </t>
+                                                <t t-else="item.name">
+                                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                                </t>
+                                            </t>
+                                            <t t-elif="item_last">
+                                                <t t-if="item.name  in ['PRE-PACK: MILKY WHITE','PRINTED POLY: MILKY WHITE'] and poly == False">
+                                                    <span>&amp; POLY BAG</span>
+                                                    <t t-set="poly" t-value="True"/>
+                                                </t>
+                                                <t t-elif="item.name in ['TISSUE','TISSUE PAPER'] and tissue == False">
+                                                    <span>&amp; TISSUE</span>
+                                                    <t t-set="tissue" t-value="True"/>
+                                                </t>
+                                                <t t-elif="item.name in ['COLLAR BAND: 350 GSM'] and collar == False">
+                                                    <span>&amp; COLLAR BAND</span>
+                                                </t>
+                                                <t t-elif="item.name in ['CARD BOARD: W/B-350 GSM.','CARD BOARD: W/BACK-400 GSM.','PAPER BOARD: DOUBLE THICK'] and paper == False">
+                                                    <span>&amp; PAPER BOARD</span>
+                                                    <t t-set="paper" t-value="True"/>
+                                                </t>
+                                                <t t-elif="item.name in ['PAPER GUMTAPE'] and gumtape == False">
+                                                    <span>&amp; GUMTAPE</span>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="padding-top: 0px; padding-left: 32px; ">FOR EXPORT GARMENTS</td>
+                            </tr>
+                        </table>
+                        <p style="padding-top:20px;"> WE DAROG CORPORATION, CERTIFY THAT THE GOODS DESCRIBED HERE IN ABOVE ARE OF BANGLADESH ORIGIN.</p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

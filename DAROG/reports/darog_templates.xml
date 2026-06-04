@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_darog">
+        <t t-call="web.basic_layout">
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap');
+                @page{
+                    size: A4;
+                    margin: 0.25in !important;
+                    @bottom-center{
+                        content: element(report_footer);
+                    }
+                }
+                .report_footer{
+                    position: running(report_footer);
+                    width:100%;
+                    text-align: center;
+                    font-size: 12px;
+                    margin-top: 20px;
+                }
+                body, html{
+                    margin: 0 !important;
+                }
+                .page{
+                    page-break-after: avoid !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    font-family: "Times New Roman", Times,"Tinos",serif !important;
+                    font-size: 13px;
+                }
+                .mt-4{
+                    margin-top: 4 px;
+                }
+                .logo{
+                    text-align: center;
+                    margin-top:0 !important;
+                    padding: 0 !important;
+                    border-bottom: 2px solid black;
+                    margin-bottom: 20px;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    overflow: hidden;
+                }
+                .logo img{
+                    max-width:100%;
+                    width:100%;
+                    height: auto;
+                }
+                .recieve{
+                    text-align: left;
+                    width:200px;
+                }
+                .date{
+                    padding-top:10px;
+                }
+                .header_row{
+                    display: flex;
+                    justify-content:space-between;
+                    align-items: center;
+                    width: 100%;
+                }
+                .table-des{
+                    border: 0px solid white !important;
+                    border-collapse: collapse;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    border-spacing: 0 !important;
+                    width: 100%;
+                }
+                .table-des td{
+                    border: 0px solid white !important;
+                    padding: 0 !important;
+                    vertical-align: top;
+                }
+                .table-des tr{
+                    border: 0px solid white !important;
+                }
+                .jinish{
+                    justify-content: center;
+                    align-items: center;
+                    background-color:solid white;
+                    font-weight: bold;
+                    border: 1px solid black !important;
+                    text-align: center;
+                }
+                .justify table thead tbody tr td{
+                    border-collapse: collapse;
+                    align-items: center;
+                    justify-content: center;
+                    width: 100%;
+                }
+            </style>
+            <t t-foreach="docs" t-as="o">
+                <!-- LOGO SECTION START-->
+                <div class="logo">
+                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" alt="Comapny Logo" style="width:100%;height:auto;display:block"/>
+                </div>
+                <!-- LOGO SECTION END-->
+                <div class="page">
+                    <h3 style="text-align:center;"> <u><b>PROFORMA INVOICE</b></u></h3>
+                <div class="row">
+                    <table class="table-des">
+                        <tr>
+                            <td style="text-align:left;border: 0px solid white !important;"><strong> TO: </strong></td>
+                            <td style="text-align:right; border: 0px solid white !important;"><strong> INVOICE NO: DC/<t t-esc="o.invoice_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></strong></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;border: 0px solid white !important;"><strong><span t-field="o.reciepent_id.name"/></strong></td>
+                            <td style="text-align:right; border: 0px solid white !important;"><strong>DATE: <span style="padding-left: 10px;" t-esc="o.invoice_date.strftime('%d.%m.%Y')"/></strong></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;border: 0px solid white !important;"> <span t-field="o.reciepent_id.address"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <p style="padding-top: 5px; padding-bottom:0px;"> We are pleased to offer garments accessories as per the following terms and condition: </p>
+                <table style="width:100%;">
+                    <thead>
+                        <th> SL NO. </th>
+                        <th> Description </th>
+                        <th> QUANTITY/DZN </th>
+                        <th> PRICE/UNIT </th>
+                        <th> AMOUNT IN $US </th>
+                    </thead>
+                    <tbody>
+                        <t t-set="sorted_items" t-value="sorted(o.items_id, key=lambda i: (i.name == 'PAPER GUMTAPE', len(i.name or '')))"/>
+                        <t t-foreach="sorted_items" t-as="item">
+                            <tr style="border-bottom:0px solid white;border-top:0px solid white;">
+                                <td></td>
+                                <td><strong> <u><t t-esc="item.name"/></u></strong> </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <t t-set="next_item" t-value="sorted_items[item_index + 1].name if not item_last else False"/>
+                            <t t-foreach="o.measurement_ids" t-as="measurement">
+                                <t t-if="measurement.items_id.name == item.name">
+                                    <t t-if="item.name in ['PRE-PACK: MILKY WHITE','PRINTED POLY: MILKY WHITE']">
+                                        <tr style="border-bottom:0px solid white;border-top:0px solid white;">
+                                            <td></td>
+                                            <td style="font-size:12px;">L - <t t-esc="measurement.length"/> <t t-esc="measurement.measure"/> + AD - <t t-esc="measurement.adhesive"/> <t t-esc="measurement.measure"/> , W - <t t-esc="measurement.width"/> <t t-esc="measurement.measure"/> </td>
+                                            <td style="text-align:center; font-size:12px;">
+                                                <p style="margin:0;"><t t-esc="measurement.quantity"/></p>
+                                            </td>
+                                            <td style="text-align:center; font-size:12px;">$<t t-esc="measurement.per_unit_price"/></td>
+                                            <td style="text-align:center; font-size:12px;">$<t t-esc="measurement.total_price"/></td>
+                                        </tr>
+                                    </t>
+                                    <t t-elif="item.name not in ['PRE-PACK: MILKY WHITE','PRINTED-POLY: MILKY WHITE','PAPER GUMTAPE']">
+                                        <tr style="border-bottom:0px solid white;border-top:0px solid white;">
+                                            <td></td>
+                                            <td style="font-size:12px;">L - <t t-esc="measurement.length"/> <t t-esc="measurement.measure"/> X W - <t t-esc="measurement.width"/> <t t-esc="measurement.measure"/></td>
+                                            <td style="text-align:center; font-size:12px;"><t t-esc="measurement.quantity"/></td>
+                                            <td style="text-align:center; font-size:12px;">$<t t-esc="measurement.per_unit_price"/></td>
+                                            <td style="text-align:center; font-size:12px;">$<t t-esc="measurement.total_price"/></td>
+                                        </tr>
+                                    </t>
+                                    <t t-elif="item.name in ['PAPER GUMTAPE']">
+                                        <tr style="border-bottom:0px solid white;border-top:0px solid white;">
+                                            <td></td>
+                                            <td style="font-size:12px;"><t t-esc="item.description"/></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr style="border-bottom:0px solid white;border-top:0px solid white;">
+                                            <td></td>
+                                            <td style="font-size=15px;">FREE QTY. : <t t-esc="measurement.quantity"/> ROLL. </td>
+                                            <td style="text-align: center; font-size:12px;"><t t-esc="measurement.quantity"/></td>
+                                            <td style="text-align: center; font-size:12px;">$<t t-esc="measurement.per_unit_price"/></td>
+                                            <td style="text-align: center; font-size:12px;">$<t t-esc="measurement.total_price"/></td>
+                                        </tr>
+                                        <tr style="border-bottom:0px solid white;border-top:0px solid white;">
+                                            <td></td>
+                                            <td></td>
+                                            <td style="text-align: center; border-bottom: 0px solid white !important;">ROLL.</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </t>
+                            <t t-if="next_item == 'PAPER GUMTAPE'"> 
+                                <tr style="border-bottom:0px solid white;border-top:0px solid white;">
+                                    <td></td>
+                                    <td></td>
+                                    <td style="text-align: center;font-size: 12px;">DZN.</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </t>
+                        </t>
+                        <tr style="border-top: 0px solid white !important; border-bottom: 0px solid white !important;">
+                            <td></td>
+                            <td>
+                                <t t-if="o.booking_type == 'booking'">
+                                    <strong>BOOKING NO.:</strong><br/>
+                                </t>
+                                <t t-elif="o.booking_type == 'po'">
+                                    <strong>P.O. NO.:</strong><br/>
+                                </t>
+                                <t t-elif="o.booking_type == 'styling'">
+                                    <strong>STYLING NO.:</strong><br/>
+                                </t>
+                                <t t-set="booking_list" t-value="o.booking_ids"/>
+                                <t t-set="cnt" t-value="0"/>
+                                <t t-foreach="booking_list" t-as="booking">
+                                    <t t-if="cnt+len(booking.booking_no) &lt; 60">
+                                        <strong> <t t-esc="booking.booking_no"/>. </strong>
+                                        <t t-set="cnt" t-value="cnt + len(booking.booking_no)"/>
+                                    </t>
+                                    <t t-elif="cnt >= 3">
+                                        <br/> <strong> <t t-esc="booking.booking_no"/>. </strong>
+                                        <t t-set="cnt" t-value="len(booking.booking_no)"/>
+                                    </t>
+                                </t>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr style="border-top: 0px solid white !important;border-bottom: 0px solid white !important;">
+                            <td></td>
+                            <td><strong>BUYER: MANGO.</strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr style="border-top: 0px solid white !important; border-bottom: 0px solid white !important;">
+                            <td></td>
+                            <td><strong>QUALITY: MANGO APPROVED </strong></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr style="border-top: 1px solid black !important; ">
+                            <td></td>
+                            <td>
+                                <t t-if="o.gross_weight or o.net_weight"> WEIGHT: </t> <t t-if="o.gross_weight"> GROSS: <t t-esc="o.gross_weight"/> KG </t>
+                                <t t-if="o.net_weight"> NET: <t t-esc="o.net_weight"/> KG </t>
+                            </td>
+                            <td></td>
+                            <td style="text-align:right;padding: 20px; ">Total=</td>
+                            <td style="text-align: center;padding: 20px; "><t t-esc="o.total_amount"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>In Word(USD$): <t t-esc="o.amount_in_words"/></p>
+                <p style="margin-top:0px;">TERMS AND CONDITIONS:</p>
+                <table style="border: 0px solid white;width:100%;border-collapse:collapse;font-size:12px;">
+                    <tr>
+                        <td>1. Payment</td>
+                        <td>:By 100 confirmed &amp; irrevocable L/C at 90 days sightin us dollar.</td>
+                    </tr>
+                    <tr>
+                        <td>2. Advising Bank</td>
+                        <td>:Uttara Bank PLC, Banijya Shakha,34,Garib-E-Newaz Ave, Sec: 13,Uttara, Dhaka-1230</td>
+                    </tr>
+                    <tr>
+                        <td>3. Country Of Origin</td>
+                        <td>:Bangladesh</td>
+                    </tr>
+                    <tr>
+                        <td>4. Delivery</td>
+                        <td>: At Point</td>
+                    </tr>
+                    <tr>
+                        <td>Loading Factory</td>
+                        <td>:DAROG CORPORATION.</td>
+                    </tr>
+                    <tr>
+                        <td>Dispatching Factory</td>
+                        <td>:<t t-esc="o.reciepent_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td>5. Swift Code</td>
+                        <td>:UTBLBDDH4S3</td>
+                    </tr>
+                    <tr>
+                        <td>6. BIN NO.</td>
+                        <td>:0 00008386-0301</td>
+                    </tr>
+                    <tr>
+                        <td>7. HS. CODE</td>
+                        <td> :6217.10.00</td>
+                    </tr>
+                    <tr>
+                        <td>8.VALIDITY</td>
+                        <td>:30 DAYS FROM THE DATE OF PROFORMA INVOICE.</td>
+                    </tr>
+                    <t t-if="o.goods_weight">
+                        <tr>
+                            <td>9. GOODS WEIGHT</td>
+                            <td>: <t t-esc="o.goods_weight"/> KG</td>
+                        </tr>
+                    </t>
+                </table>
+                <table style="border: 0px solid white;width:100%;border-collapse:collapse;">
+                    <tr>
+                        <td></td>
+                        <td style="text-align:right;">For and on behalf of</td>
+                    </tr>
+                    <tr>
+                    <td></td>
+                    <td style="text-align:right;">Darog Corporation</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="text-align:right;padding-top: 50px;text-decoration: overline;">Authorized Signatory</td>
+                    </tr>
+                </table>
+                <div class="report_footer">
+                    <table style="border: 0px solid white;width:100%;border-collapse:collapse;margin-top:20px;">
+                        <tr>
+                            <td style="text-align:center;font-size:12px;"><strong>Mailing Address: Flat # B-4, House # 16, Road # Sonargaon Janapath, Sector# 12, Uttara, Dhaka-1230.</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center;font-size:12px;"><strong>Tell : 880-0171 2895173,E-mail:darogbd@gmail.com</strong></td>
+                        </tr>
+                    </table>
+                </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

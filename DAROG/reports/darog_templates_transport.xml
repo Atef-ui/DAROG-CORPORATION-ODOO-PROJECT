@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_darog_transport">
+        <t t-call="web.basic_layout">
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap');
+                @page{
+                    size: A4;
+                    margin: 0.5in !important;
+                }
+                .page{
+                    width: 100%;
+                    height: 100%;
+                    font-family: "Times New Roman", Times,"Tinos",serif !important;
+                    font-size: 14px;
+                    padding-right: 0.8in !important;
+                    padding-left: 0.8in !important;
+                }
+                .logo{
+                    text-align: center;
+                    margin-top:0 !important;
+                    padding: 0 !important;
+                    border-bottom: 2px solid black;
+                    margin-bottom: 20px;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    overflow: hidden;
+                }
+                .logo img{
+                    max-width:100%;
+                    width:100%;
+                    height: auto;
+                }
+                .cert-title-rotated {
+                    text-align: center;
+                }
+                .faka{
+                    padding-top: 30px;
+                }
+                h1{
+                    color: solid black;
+                    -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+                    -webkit-text-stroke-width: 2px;
+                    -webkit-text-stroke-color: black;
+                    text-align: center;
+                    font-size: 60px;
+                    padding-top: 60px;
+                }
+                .faka{
+                    padding-top: 20px;
+                }
+            </style>
+            <div class="page">
+                <h1 style="padding-top: 150px;"> BAY TRANSPORTATION </h1>
+                <p style="padding-top: 30px; text-align: center;"><strong> B.K BARI, RAJENDRAPUR, GAZIPUR </strong></p>
+            <t t-foreach="docs" t-as="o">
+            <table style="width: 100%; border: 0px solid white !important; border-collapse: collapse;">
+                <tr>
+                    <td style="text-align: left;" class="faka">DC/CI/<t t-esc="o.invoice_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></td>
+                    <td style="text-align: center;" class="faka">DATE : <t t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/>.</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;" class="faka">CONSIGNOR</td>
+                    <td>:<strong style="padding-left: 30px;" class="faka">DAROG CORPORATION</strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding-left: 32px;"><span t-field="o.company_id.address"/></td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;" class="faka"> CONSIGNEE </td>
+                    <td class="faka">:<strong><span style="padding-left: 30px;" t-field="o.reciepent_id.name"/></strong></td> 
+                </tr>
+                <tr>
+                    <td></td>
+                    <td  style="padding-left: 32px;"><span t-field="o.reciepent_id.address"/>.</td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;" class="faka"> CONSIGNEE BANK </td>
+                    <td class="faka">:<strong><span style="padding-left: 30px;" t-field="o.reciepent_id.bank_id.name"/></strong></td> 
+                </tr>
+                <tr>
+                    <td></td>
+                    <td  style="padding-left: 32px;"><span t-field="o.reciepent_id.bank_id.address"/></td>
+                </tr>
+                <tr>
+                    <td style="text-align:left;" class="faka">SHIPPED PER</td>
+                    <td>:<span style="padding-left: 30px;">DELIVERY VAN</span></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><span style="padding-left: 32px;">DHAKA METRO MA-1010</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;" class="faka"> EXPORT L/C OR S/C NO </td>
+                    <td class="faka">:<strong><span style="padding-left: 30px;" t-esc="o.export_lc_no"/></strong></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><strong><span style="padding-left: 32px;">DATE : <t t-esc="o.export_date.strftime('%d.%m.%Y')"/>.</span></strong></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;" class="faka">INVOICE NO.</td>
+                    <td class="faka">:<strong style="padding-left: 30px;">DC/<t t-esc="o.invoice_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></strong><strong style="padding-left: 10px;"> DATE: <t t-esc="o.invoice_date.strftime('%d.%m.%Y')"/>.</strong></td>
+                </tr>
+                <tr>
+                    <td class="faka"> QUANTITY </td>
+                    <td class="faka">:<strong><span style="padding-left: 30px;"><t t-esc="o.total_quantity"/></span> DZN <t t-if="o.total_roll &gt; 0">+ <t t-esc="o.total_roll"/> ROLL </t></strong></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;" class="faka"> LOCAL L/C NO </td>
+                    <td class="faka">:<strong><span style="padding-left: 30px;" t-esc="o.lc_no"/></strong><strong style="padding-left: 10px;">DATE: <t t-esc="o.incoming_date.strftime('%d.%m.%Y')"/>.</strong></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;" class="faka">SHIPPING MARKS</td>
+                    <td class="faka"><span style="padding-left:32px;">DESCRIPTION OF GOODS</span></td>
+                </tr>
+                <tr>
+                    <td class="faka"> FRIGHT PREPAID </td>
+                    <td class="faka">:
+                    <span style="padding-left: 30px;">
+                        <t t-set="cnt" t-value="0"/>
+                        <t t-set="total" t-value="len(o.items_id)"/>
+                        <t t-set="poly" t-value="False"/>
+                        <t t-set="tissue" t-value="False"/>
+                        <t t-set="paper" t-value="False"/>
+                        <t t-set="gumtape" t-value="False"/>
+                        <t t-set="collar" t-value="False"/>
+                        <t t-foreach="o.items_id" t-as="item">
+                            <t t-if="item_first">
+                                <t t-if="item.name  in ['PRE-PACK: MILKY WHITE','PRINTED POLY: MILKY WHITE'] and poly == False">
+                                    <span>POLY BAG</span>
+                                    <t t-set="poly" t-value="True"/>
+                                </t>
+                                <t t-elif="item.name in ['TISSUE','TISSUE PAPER'] and tissue == False">
+                                    <span>TISSUE</span>
+                                     <t t-set="tissue" t-value="True"/>
+                                </t>
+                                <t t-elif="item.name in ['COLLAR BAND: 350 GSM']">
+                                    <span>COLLAR BAND</span>
+                                    <t t-set="collar" t-value="True"/>
+                                </t>
+                                <t t-elif="item.name in ['CARD BOARD: W/B-350 GSM.','CARD BOARD: W/BACK-400 GSM.','PAPER BOARD: DOUBLE THICK'] and paper == False">
+                                    <span>PAPER BOARD</span>
+                                    <t t-set="paper" t-value="True"/>
+                                </t>
+                                <t t-elif="item.name in ['PAPER GUMTAPE'] and gumtape == False">
+                                    <span>GUMTAPE</span>
+                                    <t t-set="gumtape" t-value="True"/>
+                                </t>
+                            </t>
+                            <t t-if="not item_last">
+                                <t t-if="item.name  in ['PRE-PACK: MILKY WHITE','PRINTED POLY: MILKY WHITE'] and poly == False">
+                                    <span>, POLY BAG</span>
+                                    <t t-set="poly" t-value="True"/>
+                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                </t>
+                                <t t-elif="item.name in ['TISSUE','TISSUE PAPER'] and tissue == False">
+                                    <span>, TISSUE</span>
+                                    <t t-set="tissue" t-value="True"/>
+                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                </t>
+                                <t t-elif="item.name in ['COLLAR BAND: 350 GSM'] and collar == False">
+                                    <span>, COLLAR BAND</span>
+                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                    <t t-set="collar" t-value="True"/>
+                                 </t>
+                                <t t-elif="item.name in ['CARD BOARD: W/B-350 GSM.','CARD BOARD: W/BACK-400 GSM.','PAPER BOARD: DOUBLE THICK'] and paper == False">
+                                    <span>, PAPER BOARD</span>
+                                    <t t-set="paper" t-value="True"/>
+                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                </t>
+                                <t t-elif="item.name in ['PAPER GUMTAPE'] and gumtape == False">
+                                    <span>, GUMTAPE</span>
+                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                    <t t-set="gumtape" t-value="True"/>
+                                </t>
+                                <t t-else="item.name">
+                                    <t t-set="cnt" t-value="cnt + 1"/>
+                                </t>
+                            </t>
+                            <t t-elif="item_last">
+                                <t t-if="item.name  in ['PRE-PACK: MILKY WHITE','PRINTED POLY: MILKY WHITE'] and poly == False">
+                                    <span>&amp; POLY BAG</span>
+                                    <t t-set="poly" t-value="True"/>
+                                </t>
+                                <t t-elif="item.name in ['TISSUE','TISSUE PAPER'] and tissue == False">
+                                    <span>&amp; TISSUE</span>
+                                    <t t-set="tissue" t-value="True"/>
+                                </t>
+                                <t t-elif="item.name in ['COLLAR BAND: 350 GSM'] and collar == False">
+                                    <span>&amp; COLLAR BAND</span>
+                                </t>
+                                <t t-elif="item.name in ['CARD BOARD: W/B-350 GSM.','CARD BOARD: W/BACK-400 GSM.','PAPER BOARD: DOUBLE THICK'] and paper == False">
+                                    <span>&amp; PAPER BOARD</span>
+                                    <t t-set="paper" t-value="True"/>
+                                </t>
+                                <t t-elif="item.name in ['PAPER GUMTAPE'] and gumtape == False">
+                                    <span>&amp; GUMTAPE</span>
+                                </t>
+                            </t>
+                        </t>
+                    </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="padding-top: 0px; padding-left: 32px; ">FOR EXPORT GARMENTS</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;" class="faka"> FOR BAY TRANSPORTATION </td>
+                    <td></td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+                    <td style="text-align: left; padding-top:30px;"> AUTHORIZED SIGNATURE </td>
+                </tr>
+            </table>
+            </t>
+            </div>
+        </t>
+    </template>
+</odoo>
