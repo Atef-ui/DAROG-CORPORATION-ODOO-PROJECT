@@ -24,9 +24,11 @@
                 .page{
                     page-break-after: avoid !important;
                     margin: 0 !important;
-                    padding: 0 !important;
+                    padding: 0.5in !important;
                     font-family: "Times New Roman", Times,"Tinos",serif !important;
-                    font-size: 13px;
+                    font-size: 14px;
+                    padding-left:0.5in !important;
+                    padding-right:0.5in !important;
                 }
                 .mt-4{
                     margin-top: 4 px;
@@ -90,14 +92,30 @@
                     justify-content: center;
                     width: 100%;
                 }
+                .things td{
+                    padding-left: 5px !important;
+                    border: 1px solid black;
+                    border-bottom: 0px solid white;
+                    border-top: 0px solid white;
+                }
+                .things table{
+                    border: 1px solid black !important;
+                    line-height: 1.1;
+                }
+                .things th{
+                    border: 1px solid black;
+                }
+                .no table tr td{
+                    border: 0px solid white !important;
+                }
             </style>
             <t t-foreach="docs" t-as="o">
                 <!-- LOGO SECTION START-->
                 <div class="logo">
-                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" alt="Comapny Logo" style="width:100%;height:auto;display:block"/>
+                    <!-- <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" alt="Comapny Logo" style="width:100%;height:auto;display:block"/> -->
                 </div>
                 <!-- LOGO SECTION END-->
-                <div class="page">
+                <div class="page" style="padding-top: 180px !important;">
                     <h3 style="text-align:center;"> <u><b>PROFORMA INVOICE</b></u></h3>
                 <div class="row">
                     <table class="table-des">
@@ -115,7 +133,7 @@
                     </table>
                 </div>
                 <p style="padding-top: 5px; padding-bottom:0px;"> We are pleased to offer garments accessories as per the following terms and condition: </p>
-                <table style="width:100%;">
+                <table style="width:100%;line-height: 1.1;" class="things">
                     <thead>
                         <th> SL NO. </th>
                         <th> Description </th>
@@ -164,20 +182,24 @@
                                             <td></td>
                                             <td></td>
                                         </tr>
-                                        <tr style="border-bottom:0px solid white;border-top:0px solid white;">
-                                            <td></td>
-                                            <td style="font-size=15px;">FREE QTY. : <t t-esc="measurement.quantity"/> ROLL. </td>
-                                            <td style="text-align: center; font-size:12px;"><t t-esc="measurement.quantity"/></td>
-                                            <td style="text-align: center; font-size:12px;">$<t t-esc="measurement.per_unit_price"/></td>
-                                            <td style="text-align: center; font-size:12px;">$<t t-esc="measurement.total_price"/></td>
-                                        </tr>
-                                        <tr style="border-bottom:0px solid white;border-top:0px solid white;">
-                                            <td></td>
-                                            <td></td>
-                                            <td style="text-align: center; border-bottom: 0px solid white !important;">ROLL.</td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
+                                        <t t-if="measurement.yards == 0">
+                                            <tr style="border-bottom:0px solid white !important;border-top:0px solid white !important;">
+                                                <td></td>
+                                                <td style="font-size:12px !important;">FREE QTY. : <t t-esc="'{:.2f}'.format(measurement.quantity)"/> ROLL. </td>
+                                                <td style="text-align: center; font-size:12px !important;"><t t-esc="'{:.2f}'.format(measurement.quantity)"/> ROLL.</td>
+                                                <td style="text-align:center; font-size:12px;">$<t t-esc="measurement.per_unit_price"/></td>
+                                                <td style="text-align:center; font-size:12px;">$<t t-esc="measurement.total_price"/></td>
+                                            </tr>
+                                        </t>
+                                        <t t-elif="measurement.yards &gt; 0">
+                                            <tr style="border-bottom:0px solid white !important;border-top:0px solid white !important;">
+                                                <td></td>
+                                                <td style="font-size:12px !important;">QAUANTITY : <t t-esc="'{:.2f}'.format(measurement.quantity)"/> ROLL X <t t-esc="measurement.yards"/> YDS. = <t t-esc="o.total_roll"/> YDS. </td>
+                                                <td style="text-align: center; font-size:12px !important;"><t t-esc="'{:.2f}'.format(o.total_roll)"/> YDS. </td>
+                                                <td style="text-align:center; font-size:12px;">$<t t-esc="measurement.per_unit_price"/></td>
+                                                <td style="text-align:center; font-size:12px;">$<t t-esc="measurement.total_price"/></td>
+                                            </tr>
+                                        </t>
                                     </t>
                                 </t>
                             </t>
@@ -234,11 +256,21 @@
                             <td></td>
                             <td></td>
                         </tr>
-                        <tr style="border-top: 1px solid black !important; ">
+                        <tr style="border-top: 1px solid black !important; border-bottom: 1px solid black !important;">
                             <td></td>
                             <td>
-                                <t t-if="o.gross_weight or o.net_weight"> WEIGHT: </t> <t t-if="o.gross_weight"> GROSS: <t t-esc="o.gross_weight"/> KG </t>
-                                <t t-if="o.net_weight"> NET: <t t-esc="o.net_weight"/> KG </t>
+                                <t t-if="(o.gross_weight &gt; 0) or (o.net_weight &gt; 0)">
+                                    WEIGHT: 
+                                    <t t-if="o.gross_weight"> 
+                                        GROSS: <t t-esc="o.gross_weight"/> KG 
+                                    </t>
+                                    <t t-if="o.net_weight"> 
+                                    NET: <t t-esc="o.net_weight"/> KG 
+                                    </t>
+                                </t>
+                                <t t-elif="o.goods_weight &gt; 0"> 
+                                    <strong>WEIGHT: <t t-esc="o.goods_weight"/> KG </strong>
+                                </t>
                             </td>
                             <td></td>
                             <td style="text-align:right;padding: 20px; ">Total=</td>
@@ -248,10 +280,11 @@
                 </table>
                 <p>In Word(USD$): <t t-esc="o.amount_in_words"/></p>
                 <p style="margin-top:0px;">TERMS AND CONDITIONS:</p>
-                <table style="border: 0px solid white;width:100%;border-collapse:collapse;font-size:12px;">
+                <div class="no">
+                <table style="border: 0px solid white !important;width:100%;border-collapse:collapse;font-size:12px;">
                     <tr>
                         <td>1. Payment</td>
-                        <td>:By 100 confirmed &amp; irrevocable L/C at 90 days sightin us dollar.</td>
+                        <td>:By 100 confirmed &amp; irrevocable L/C at <t t-esc="o.payment_within"/> days sight in us dollar.</td>
                     </tr>
                     <tr>
                         <td>2. Advising Bank</td>
@@ -279,7 +312,7 @@
                     </tr>
                     <tr>
                         <td>6. BIN NO.</td>
-                        <td>:0 00008386-0301</td>
+                        <td>:000008386-0301</td>
                     </tr>
                     <tr>
                         <td>7. HS. CODE</td>
@@ -310,6 +343,8 @@
                         <td style="text-align:right;padding-top: 50px;text-decoration: overline;">Authorized Signatory</td>
                     </tr>
                 </table>
+                </div>
+                <!--
                 <div class="report_footer">
                     <table style="border: 0px solid white;width:100%;border-collapse:collapse;margin-top:20px;">
                         <tr>
@@ -320,6 +355,7 @@
                         </tr>
                     </table>
                 </div>
+                -->
                 </div>
             </t>
         </t>
