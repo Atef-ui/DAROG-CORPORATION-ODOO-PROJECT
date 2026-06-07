@@ -13,7 +13,7 @@
                     height: 100%;
                     font-family: "Times New Roman", Times,"Tinos",serif !important;
                     font-size: 14px;
-                    line-height: 1.3;
+                    line-height: 1.1;
                     padding: 0.5in !important;
                     padding-right: 0.5in !important;
                     padding-left: 0.5in !important;
@@ -62,6 +62,15 @@
                 tr,td{
                     padding-left: 5px;
                 }
+                .things td{
+                    border: 1px solid black;
+                    border-top: 0px solid white;
+                    border-bottom: 0px solid white;
+                }
+                .hala td{
+                    border-right: 0px solid white !important;
+                    border-left: 0px solid white !important;
+                }
             </style>
             <t t-foreach="docs" t-as="o">
                 <!-- LOGO SECTION START-->
@@ -72,16 +81,16 @@
                 <!-- MAIN BODY START-->
                 <div class="page" style="padding-top: 150px !important;">
                     <div style="text-align: center; padding-top: 20px;">
-                        <h2 style="display: inline-block; text-align: center; padding-top: 0px !important; padding-bottom: 0px !important; border: 1px solid black;padding-left: 5px; padding-right: 5px;"><strong>PACKING LIST</strong></h2>
+                        <h3 style="display: inline-block; text-align: center; padding-top: 0px !important; padding-bottom: 0px !important; border: 1px solid black;padding-left: 5px; padding-right: 5px;"><strong>PACKING LIST</strong></h3>
                     </div>
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;" class="things">
                         <tr>
-                            <td style="text-align: left;">NAME &amp; ADDRESS :-</td>
-                            <td colspan="2"><strong>NO. : <span style="padding-left: 12px;">DC/CI/<t t-esc="o.incoming_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></span></strong></td>
+                            <td style="text-align: left; border-top: 1px solid black; border-bottom: 1px solid black;">NAME &amp; ADDRESS :-</td>
+                            <td colspan="2" style="border-top: 1px solid black !important;"><strong>NO. : <span style="padding-left: 12px;">DC/CI/<t t-esc="o.incoming_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></span></strong></td>
                         </tr>
                         <tr>
                             <td style="border-bottom: 0px solid white !important;"> </td>
-                            <td colspan="2"><strong>DATE : <span style="padding-left: 10px;"><span t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                            <td colspan="2" style="border-top: 1px solid black;"><strong>DATE : <span style="padding-left: 10px;"><span t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/></span></strong></td>
                         </tr>
                         <tr>
                             <td style="border-bottom: 0px solid white; !important;">
@@ -95,7 +104,7 @@
                         </tr>
                         <tr>
                             <td style="border-bottom: 0px solid white !important; border-top: 0px solid white !important;"></td>
-                            <td colspan="2"><strong> L/C ISSUING BANK :- </strong></td>
+                            <td colspan="2" style="border-top: 1px solid black !important; border-bottom: 1px solid black !important"><strong> L/C ISSUING BANK :- </strong></td>
                         </tr>
                         <tr>
                             <td style="border-bottom: 0px solid white !important; border-top: 0px solid white !important;"> </td>
@@ -106,14 +115,14 @@
                             <td style="border-top: 0px solid white !important;" colspan="2"> <span style="font-size: 12px;" t-field="o.reciepent_id.bank_id.address"/></td>
                         </tr>
                         <tr>
-                            <td style="border-top:1px solid black;"><strong> EXPORT L/C OR SC NO. : </strong></td>
-                            <td colspan="2"><strong> PROFORMA INVOICE NO. : </strong></td>
+                            <td style="border-top:1px solid black; border-bottom: 1px solid black;"><strong> EXPORT L/C OR SC NO. : </strong></td>
+                            <td colspan="2" style="border-top: 1px solid black;border-bottom: 1px solid black;"><strong> PROFORMA INVOICE NO. : </strong></td>
                         </tr>
                         <tr>
                             <td>
                                 <strong><span t-field="o.export_lc_no"/></strong>
                                 <strong style="padding-left: 20px;"> DATE : <span t-esc="o.export_date.strftime('%d.%m.%Y')"/></strong><br/>
-                                <table style="border: 0px solid white !important;">
+                                <table style="border: 0px solid white !important;" class="hala">
                                     <t t-set="cnt" t-value="0"/>
                                     <t t-if="o.tin_no_needed">
                                         <t t-if="cnt == 0">
@@ -211,6 +220,22 @@
                                             </tr>
                                         </t>
                                     </t>
+                                    <t t-if="o.ref_no_needed">
+                                        <t t-if="cnt == 0">
+                                            <tr>
+                                                <td><strong>APPLICANTS REF. NO : </strong></td>
+                                                <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.ref_no"/></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                        <t t-elif="cnt &gt; 0">
+                                            <tr>
+                                                <td style="text-align:right;"><strong>REF NO : </strong></td>
+                                                <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.ref_no"/></td>
+                                                <t t-set="cnt" t-value="cnt + 1"/>
+                                            </tr>
+                                        </t>
+                                    </t>
                                 </table>
                                 <strong>BENEFICIARY BIN NO : 000008386-301</strong>
                             </td>
@@ -221,13 +246,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>FROM : BENEFICIARY'S FACTORY</strong></td>
-                            <td colspan="2"><strong> TO : OPENERS FACTORY</strong></td>
+                            <td style="border-top: 1px solid black;"><strong>FROM : BENEFICIARY'S FACTORY</strong></td>
+                            <td colspan="2" style="border-top: 1px solid black;"><strong> TO : OPENERS FACTORY</strong></td>
                         </tr>
                         <tr>
-                            <td style="text-align:center;"> DESCRIPTION OF GOODS </td>
-                            <td style="text-align:center;"> SIZE </td>
-                            <td style="text-align:center;"> QUANTITY IN DZN </td>
+                            <td style="text-align:center; border-top: 1px solid black !important; border-bottom: 1px solid black !important;"> DESCRIPTION OF GOODS </td>
+                            <td style="text-align:center; border-top: 1px solid black !important; border-bottom: 1px solid black !important;"> SIZE </td>
+                            <td style="text-align:center; border-top: 1px solid black !important; border-bottom: 1px solid black !important;"> QUANTITY IN DZN </td>
                         </tr>
                         <!--ITEMS MEASUREMENT SECTION START-->
                         <t t-set="sorted_items" t-value="sorted(o.items_id, key=lambda i: (i.name == 'PAPER GUMTAPE', len(i.name or '')))"/>
@@ -261,11 +286,20 @@
                                             <td></td>
                                             <td></td>
                                         </tr>
-                                        <tr style="border-bottom:0px solid white !important;border-top:0px solid white !important;">
-                                            <td style="font-size:12px !important;">FREE QTY. : <t t-esc="'{:.2f}'.format(measurement.quantity)"/> ROLL. </td>
-                                            <td style="text-align: center; font-size: 12px;"> 70 MM</td>
-                                            <td style="text-align: center; font-size:12px !important;"><t t-esc="'{:.2f}'.format(measurement.quantity)"/> ROLL</td>
-                                        </tr>
+                                        <t t-if="measurement.yards == 0">
+                                            <tr style="border-bottom:0px solid white !important;border-top:0px solid white !important;">
+                                                <td style="font-size:12px !important;">FREE QTY. : <t t-esc="'{:.2f}'.format(measurement.quantity)"/> ROLL. </td>
+                                                <td style="text-align: center;font-size: 12px;"> 70 MM</td>
+                                                <td style="text-align: center; font-size:12px !important;"><t t-esc="'{:.2f}'.format(measurement.quantity)"/> ROLL.</td>
+                                            </tr>
+                                        </t>
+                                        <t t-elif="measurement.yards &gt; 0">
+                                            <tr style="border-bottom:0px solid white !important;border-top:0px solid white !important;">
+                                                <td style="font-size:12px !important;">QAUANTITY : <t t-esc="'{:.2f}'.format(measurement.quantity)"/> ROLL X <t t-esc="measurement.yards"/> YDS. = <t t-esc="o.total_roll"/> YDS. </td>
+                                                <td style="text-align: center;font-size: 12px;"> 70MM</td>
+                                                <td style="text-align: center; font-size:12px !important;"><t t-esc="'{:.2f}'.format(o.total_roll)"/> YDS. </td>
+                                            </tr>
+                                        </t>
                                     </t>
                                 </t>
                             </t>
@@ -310,10 +344,10 @@
                             <td style="border-top: 0px solid white !important;"></td>
                             <td style="border-top: 0px solid white !important"></td>
                         </tr>
-                        <tr>
+                        <tr style="border-bottom: 1px solid black !important; border-top: 1px solid black !important;">
                             <td></td>
                             <td style="text-align:center;"> TOTAL </td>
-                            <td style="text-align:center;"> <t t-esc="o.total_quantity"/> DZN <t t-if="gumtape == True"> + <t t-esc="o.total_roll"/> ROLL</t></td>
+                            <td style="text-align:center;"> <t t-esc="o.total_quantity"/> DZN <t t-if="gumtape == True"> + <t t-esc="o.total_roll"/> <t t-if="o.gumtape_yards">YDS.</t> <t t-else="">ROLL.</t></t></td>
                         </tr>
                     </table>
                     <p style="margin: 0 !important;">ACCESSORIES FOR 100% EXPORT ORIENTED GARMENTS INDUSTRIES </p>
