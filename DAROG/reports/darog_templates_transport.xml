@@ -106,7 +106,7 @@
                 </tr>
                 <tr>
                     <td class="faka"> QUANTITY </td>
-                    <td class="faka">:<strong><span style="padding-left: 30px;"><t t-esc="o.total_quantity"/></span> DZN <t t-if="o.total_roll &gt; 0">+ <t t-esc="o.total_roll"/> ROLL </t></strong></td>
+                    <td class="faka">:<strong><span style="padding-left: 30px;"><t t-esc="o.total_quantity"/></span> DZN <t t-if="o.total_roll &gt; 0">+ <t t-esc="o.total_roll"/> <t t-if="o.gumtape_yards">YDS.</t> <t t-else="">ROLL.</t></t></strong></td>
                 </tr>
                 <tr>
                     <td style="text-align: left;" class="faka"> LOCAL L/C NO </td>
