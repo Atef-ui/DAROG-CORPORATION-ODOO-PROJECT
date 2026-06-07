@@ -50,7 +50,7 @@
                             <td><strong>Recieved &amp; Charge </strong>The Same To account Of <strong><t t-esc="o.reciepent_id.name.replace('.',',')"/> </strong><t t-esc="o.reciepent_id.address.replace(',',', ')"/>, DRAWN UNDER LETTER OF <strong>CREDIT NO: <t t-esc="o.lc_no"/> DATE: <t t-esc="o.incoming_date.strftime('%d.%m.%Y')"/>.</strong></td>
                         </tr>
                         <tr>
-                            <td><strong>EXPORT L/C OR SC NO : <span style="padding-right: 10px;"><t t-esc="o.export_lc_no"/> </span> DATE:<span style="padding-right: 10px;"><t t-esc="o.export_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                            <td><strong>EXPORT L/C OR S/C NO : <span style="padding-right: 10px;"><t t-esc="o.export_lc_no"/> </span> DATE:<span style="padding-right: 10px;"><t t-esc="o.export_date.strftime('%d.%m.%Y')"/></span></strong></td>
                         </tr>
                     </table>
                     <div style="padding-top: 20px;">
@@ -152,6 +152,22 @@
                                     </tr>
                                 </t>
                             </t>
+                            <t t-if="o.ref_no_needed">
+                                <t t-if="cnt == 0">
+                                    <tr>
+                                        <td><strong>APPLICANTS REF. NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.ref_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                                <t t-elif="cnt &gt; 0">
+                                    <tr>
+                                        <td style="text-align:right;"><strong>REF NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.ref_no"/></td>
+                                        <t t-set="cnt" t-value="cnt + 1"/>
+                                    </tr>
+                                </t>
+                            </t>
                         </table>
                     </div>
                     <table style="border: 0px solid white;border-collapse: collapse; width: 100%;">
@@ -204,7 +220,7 @@
                             <td><strong>Recieved &amp; Charge </strong>The Same To account Of <strong><t t-esc="o.reciepent_id.name.replace('.',',')"/></strong><t t-esc="o.reciepent_id.address.replace(',',', ')"/>, DRAWN UNDER LETTER OF <strong>CREDIT NO : <t t-esc="o.lc_no"/> DATE : <t t-esc="o.incoming_date.strftime('%d.%m.%Y')"/>.</strong></td>
                         </tr>
                         <tr>
-                            <td><strong>EXPORT L/C OR SC NO : <span style="padding-right: 10px;"><t t-esc="o.export_lc_no"/></span> DATE : <span style="padding-right: 10px;"><t t-esc="o.export_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                            <td><strong>EXPORT L/C OR S/C NO : <span style="padding-right: 10px;"><t t-esc="o.export_lc_no"/></span> DATE : <span style="padding-right: 10px;"><t t-esc="o.export_date.strftime('%d.%m.%Y')"/></span></strong></td>
                         </tr>
                     </table>
                     <div style="padding-top: 20px;">
@@ -214,14 +230,14 @@
                                 <t t-if="cnt == 0">
                                     <tr>
                                         <td><strong>APPLICANTS TIN NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.tin_no"/></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.tin_no"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
                                 <t t-elif="cnt &gt; 0">
                                     <tr>
                                         <td style="text-align:right;"><strong>TIN NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.tin_no"/></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.tin_no"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
@@ -230,14 +246,14 @@
                                 <t t-if="cnt == 0">
                                     <tr>
                                         <td><strong>APPLICANTS BIN NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.bin_no"/></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.bin_no"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
                                 <t t-elif="cnt &gt; 0">
                                     <tr>
                                         <td style="text-align:right;"><strong>BIN NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.bin_no"/></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.bin_no"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
@@ -246,14 +262,14 @@
                                 <t t-if="cnt == 0">
                                     <tr>
                                         <td><strong>APPLICANTS IRC NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.irc_no"/></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.irc_no"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
                                 <t t-elif="cnt &gt; 0">
                                     <tr>
                                         <td style="text-align:right;"><strong>IRC NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.irc_no"/></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.irc_no"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
@@ -262,14 +278,14 @@
                                 <t t-if="cnt == 0">
                                     <tr>
                                         <td><strong>APPLICANTS ERC NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.erc_no"/></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.erc_no"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
                                 <t t-elif="cnt &gt; 0">
                                     <tr>
                                         <td style="text-align:right;"><strong>ERC NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.erc_no"/></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.erc_no"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
@@ -278,14 +294,14 @@
                                 <t t-if="cnt == 0">
                                     <tr>
                                         <td><strong>APPLICANTS BOND REG. NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.bond_reg_no"/></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.bond_reg_no"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
                                 <t t-elif="cnt &gt; 0">
                                     <tr>
                                         <td style="text-align:right;"><strong>BOND REG. NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.bond_reg_no"/></td>
+                                        <td style="text-align:left;padding-left: 5px;"> <t t-esc="o.reciepent_id.bond_reg_no"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
@@ -293,15 +309,15 @@
                             <t t-if="o.bb_no_needed">
                                 <t t-if="cnt == 0">
                                     <tr>
-                                        <td><strong>APPLICANTS BB NO : </strong></td>
-                                        <td style="text-align:left;"> <t t-esc="o.reciepent_id.bb_no"/></td>
+                                        <td><strong>ISSUING BANK BIN NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"><t t-esc="o.reciepent_id.bank_id.bank_bin"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
                                 <t t-elif="cnt &gt; 0">
                                     <tr>
-                                        <td style="text-align:right;"><strong>BB NO : </strong></td>
-                                        <td style="text-align:left;"><t t-esc="o.reciepent_id.bb_no"/></td>
+                                        <td style="text-align:right;"><strong>ISSUING BANK BIN NO : </strong></td>
+                                        <td style="text-align:left;padding-left: 5px;"><t t-esc="o.reciepent_id.bank_id.bank_bin"/></td>
                                         <t t-set="cnt" t-value="cnt + 1"/>
                                     </tr>
                                 </t>
