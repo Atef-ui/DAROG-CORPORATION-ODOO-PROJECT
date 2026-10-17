@@ -1,0 +1,4 @@
+# Made automatically by Python / macOS - never upload these
+__pycache__/
+*.pyc
+.DS_Store
