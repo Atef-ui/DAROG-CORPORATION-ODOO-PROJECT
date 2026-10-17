@@ -19,8 +19,25 @@ class DarogMeasurement(models.Model):
         string="Qty Unit",
     )
     yards = fields.Float(string="Yards per Roll", digits=(16, 2))
-    per_unit_price = fields.Float(string="Unit Price", digits=(16, 4))
+    per_unit_price = fields.Float(string="Unit Price", digits=(16, 4), help="Selling price for this order.")
+    cost_price = fields.Float(
+        string="Cost Price",
+        digits=(16, 4),
+        compute="_compute_cost_price",
+        store=True,
+        readonly=False,
+        precompute=True,
+        help="Purchase cost per unit for this order, in local currency. Filled in from the item "
+             "when you choose it; change it here if this order's cost is different.",
+    )
     total_price = fields.Float(compute="_compute_total_price", digits=(16, 2), string="Amount")
+
+    @api.depends("items_id")
+    def _compute_cost_price(self):
+        # Only reacts to choosing an item: later changes to the item's cost
+        # never touch lines that already exist.
+        for line in self:
+            line.cost_price = line.items_id.price_per_unit
 
     @api.depends("quantity", "per_unit_price", "quantity_unit", "yards")
     def _compute_total_price(self):

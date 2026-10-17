@@ -15,8 +15,9 @@ class DarogItem(models.Model):
     name = fields.Char(required=True)
     description = fields.Char()
     price_per_unit = fields.Float(
-        string="Cost Per Unit",
-        help="Purchase cost in local currency. Used for profit calculation.",
+        string="Default Cost Per Unit",
+        help="Purchase cost in local currency, filled into new order lines. "
+             "Each order line keeps its own cost, so changing this never alters past orders.",
     )
     print_style = fields.Selection(
         [

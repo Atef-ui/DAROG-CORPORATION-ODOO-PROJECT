@@ -104,6 +104,7 @@
                                     <field name="quantity"/>
                                     <field name="quantity_unit"/>
                                     <field name="per_unit_price"/>
+                                    <field name="cost_price" optional="show"/>
                                     <field name="total_price"/>
                                 </list>
                             </field>

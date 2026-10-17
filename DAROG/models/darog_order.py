@@ -167,12 +167,12 @@ class DarogOrder(models.Model):
             else:
                 order.amount_in_words = f"{whole_text} ONLY"
 
-    @api.depends("total_amount", "measurement_ids.quantity", "measurement_ids.items_id.price_per_unit",
+    @api.depends("total_amount", "measurement_ids.quantity", "measurement_ids.cost_price",
                  "company_id.exchange_rate")
     def _compute_profit(self):
         for order in self:
             rate = order.company_id.exchange_rate or DEFAULT_EXCHANGE_RATE
-            cost = sum(line.quantity * line.items_id.price_per_unit for line in order.measurement_ids)
+            cost = sum(line.quantity * line.cost_price for line in order.measurement_ids)
             order.total_cost = cost / rate
             order.profit = order.total_amount - cost / rate
 

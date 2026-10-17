@@ -104,6 +104,23 @@ class TestDarog(TransactionCase):
         self.env["darog.order"]._ensure_profit_records()
         self.assertEqual(self.env["darog.profit"].search_count([("order_id", "=", order.id)]), 1, "never duplicated")
 
+    def test_prices_and_costs_are_per_order(self):
+        line = {"items_id": self.poly.id, "quantity": 100}
+        first = self._order(measurement_ids=[(0, 0, {**line, "per_unit_price": 0.30})])
+        second = self._order(measurement_ids=[(0, 0, {**line, "per_unit_price": 0.45})])
+        self.assertAlmostEqual(first.total_amount, 30.0)
+        self.assertAlmostEqual(second.total_amount, 45.0, msg="same item, different price per order")
+        self.assertEqual(first.measurement_ids.cost_price, 30, "cost is filled in from the item")
+
+        first_profit = first.profit
+        self.poly.price_per_unit = 99
+        self.assertAlmostEqual(first.profit, first_profit, msg="changing the item cost leaves past orders alone")
+        third = self._order(measurement_ids=[(0, 0, {**line, "per_unit_price": 0.45})])
+        self.assertEqual(third.measurement_ids.cost_price, 99, "new lines use the new cost")
+
+        second.measurement_ids.cost_price = 12
+        self.assertAlmostEqual(second.total_cost, 100 * 12 / 120, msg="each order can have its own cost")
+
     def test_whole_dollar_words(self):
         order = self._order(measurement_ids=[(0, 0, {"items_id": self.poly.id, "quantity": 10, "per_unit_price": 10})])
         self.assertNotIn("CENTS", order.amount_in_words)

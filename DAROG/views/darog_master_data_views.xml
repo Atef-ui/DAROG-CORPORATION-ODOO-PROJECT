@@ -124,6 +124,7 @@
                 <field name="quantity" sum="Total"/>
                 <field name="quantity_unit"/>
                 <field name="per_unit_price"/>
+                <field name="cost_price" optional="show"/>
                 <field name="total_price" sum="Total"/>
             </list>
         </field>
@@ -152,6 +153,7 @@
                             <field name="quantity"/>
                             <field name="quantity_unit"/>
                             <field name="per_unit_price"/>
+                            <field name="cost_price"/>
                             <field name="total_price"/>
                         </group>
                     </group>
