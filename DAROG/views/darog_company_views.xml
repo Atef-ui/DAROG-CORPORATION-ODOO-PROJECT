@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="darog_company_tree_view" model="ir.ui.view">
+        <field name="name">darog.company.list</field>
+        <field name="model">darog.company</field>
+        <field name="arch" type="xml">
+            <list string="Companies" default_order="name">
+                <field name="logo" widget="image" options="{'size': [0, 32]}"/>
+                <field name="name"/>
+                <field name="hs_code" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="darog_company_form_view" model="ir.ui.view">
+        <field name="name">darog.company.form</field>
+        <field name="model">darog.company</field>
+        <field name="arch" type="xml">
+            <form string="Company">
+                <sheet>
+                    <field name="logo" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Darog Corporation"/></h1>
+                    </div>
+                    <group>
+                        <group string="Details">
+                            <field name="address"/>
+                            <field name="currency_id"/>
+                        </group>
+                        <group string="Certificate of Origin">
+                            <field name="hs_code"/>
+                        </group>
+                        <group string="Profit">
+                            <field name="exchange_rate"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Certificate of Origin" name="certificate">
+                            <p class="text-muted">Title banner printed at the top of the Certificate of Origin.</p>
+                            <field name="certificate" widget="image"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="darog_company_action" model="ir.actions.act_window">
+        <field name="name">Companies</field>
+        <field name="res_model">darog.company</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="darog_menu_root" name="Darog" web_icon="DAROG,static/description/icon.png" sequence="10"/>
+
+    <menuitem id="darog_menu_orders" name="Orders" parent="darog_menu_root" action="darog_company_orders_action" sequence="10"/>
+    <menuitem id="darog_menu_reciepents" name="Recipients" parent="darog_menu_root" action="darog_company_reciepent_action" sequence="20"/>
+    <menuitem id="darog_menu_profit" name="Profit" parent="darog_menu_root" action="darog_company_profit_action" sequence="30"/>
+
+    <menuitem id="darog_menu_config" name="Configuration" parent="darog_menu_root" sequence="90"/>
+    <menuitem id="darog_menu_company" name="Companies" parent="darog_menu_config" action="darog_company_action" sequence="10"/>
+    <menuitem id="darog_menu_items" name="Items" parent="darog_menu_config" action="darog_comapny_items_action" sequence="20"/>
+    <menuitem id="darog_menu_banks" name="Banks" parent="darog_menu_config" action="darog_company_bank_action" sequence="30"/>
+    <menuitem id="darog_menu_buyers" name="Buyers" parent="darog_menu_config" action="darog_buyer_action" sequence="40"/>
+    <menuitem id="darog_menu_measurements" name="Order Lines" parent="darog_menu_config" action="darog_company_measurement_action" sequence="50"/>
+    <menuitem id="darog_menu_bookings" name="Bookings" parent="darog_menu_config" action="darog_company_booking_action" sequence="60"/>
+</odoo>

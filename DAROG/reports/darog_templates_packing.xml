@@ -267,15 +267,15 @@
                                 <t t-if="measurement.items_id.name == item.name">
                                     <t t-if="item.name in ['PRE-PACK: MILKY WHITE','PRINTED POLY: MILKY WHITE']">
                                         <tr style="border-bottom:0px solid white !important;border-top:0px solid white !important;">
-                                            <td style="font-size:12px !important;">L - <t t-esc="measurement.length"/> <t t-esc="measurement.measure"/> + AD - <t t-esc="measurement.adhesive"/> <t t-esc="measurement.measure"/> , W - <t t-esc="measurement.width"/> <t t-esc="measurement.measure"/> </td>
-                                            <td style="text-align:center; font-size:12px;"><t t-esc="measurement.length"/> X <t t-esc="measurement.width"/> + AD <t t-esc="measurement.adhesive"/> <t t-esc="measurement.measure"/></td>
+                                            <td style="font-size:12px !important;">L - <t t-esc="measurement.length"/> <t t-esc="(measurement.measure or '').upper()"/> + AD - <t t-esc="measurement.adhesive"/> <t t-esc="(measurement.measure or '').upper()"/> , W - <t t-esc="measurement.width"/> <t t-esc="(measurement.measure or '').upper()"/> </td>
+                                            <td style="text-align:center; font-size:12px;"><t t-esc="measurement.length"/> X <t t-esc="measurement.width"/> + AD <t t-esc="measurement.adhesive"/> <t t-esc="(measurement.measure or '').upper()"/></td>
                                             <td style="text-align:center; font-size:12px;"><t t-esc="'{:.2f}'.format(measurement.quantity)"/></td>
                                         </tr>
                                     </t>
                                     <t t-elif="item.name not in ['PRE-PACK: MILKY WHITE','PRINTED-POLY: MILKY WHITE','PAPER GUMTAPE']">
                                         <tr style="border-bottom:0px solid white !important;border-top:0px solid white !important;">
-                                            <td style="font-size:12px !important;">L - <t t-esc="measurement.length"/> <t t-esc="measurement.measure"/> X W - <t t-esc="measurement.width"/> <t t-esc="measurement.measure"/></td>
-                                            <td style="text-align:center; font-size:12px !important;"><t t-esc="measurement.length"/> X <t t-esc="measurement.width"/> <t t-esc="measurement.measure"/></td>
+                                            <td style="font-size:12px !important;">L - <t t-esc="measurement.length"/> <t t-esc="(measurement.measure or '').upper()"/> X W - <t t-esc="measurement.width"/> <t t-esc="(measurement.measure or '').upper()"/></td>
+                                            <td style="text-align:center; font-size:12px !important;"><t t-esc="measurement.length"/> X <t t-esc="measurement.width"/> <t t-esc="(measurement.measure or '').upper()"/></td>
                                             <td style="text-align:center; font-size:12px !important;"><t t-esc="'{:.2f}'.format(measurement.quantity)"/></td>
                                         </tr>
                                     </t>

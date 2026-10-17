@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="darog_company_profit_tree_view" model="ir.ui.view">
+        <field name="name">darog.profit.list</field>
+        <field name="model">darog.profit</field>
+        <field name="arch" type="xml">
+            <list string="Profit">
+                <field name="order_id"/>
+                <field name="reciepent" optional="hide"/>
+                <field name="invoice_no" optional="hide"/>
+                <field name="invoice_date" optional="show"/>
+                <field name="order_status" widget="badge" optional="show"
+                       decoration-info="order_status == 'new'"
+                       decoration-warning="order_status == 'in_progress'"
+                       decoration-success="order_status == 'delivered'"
+                       decoration-danger="order_status == 'canceled'"/>
+                <field name="total_amount"/>
+                <field name="total_cost"/>
+                <field name="profit" decoration-danger="profit &lt; 0" decoration-success="profit &gt; 0"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="darog_company_profit_form_view" model="ir.ui.view">
+        <field name="name">darog.profit.form</field>
+        <field name="model">darog.profit</field>
+        <field name="arch" type="xml">
+            <form string="Profit">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="order_id"/>
+                            <field name="reciepent"/>
+                            <field name="invoice_no"/>
+                            <field name="invoice_date"/>
+                            <field name="order_status"/>
+                        </group>
+                        <group>
+                            <field name="total_amount"/>
+                            <field name="total_cost"/>
+                            <field name="profit" decoration-success="profit &gt; 0" decoration-danger="profit &lt; 0"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="darog_profit_search_view" model="ir.ui.view">
+        <field name="name">darog.profit.search</field>
+        <field name="model">darog.profit</field>
+        <field name="arch" type="xml">
+            <search string="Profit">
+                <field name="order_id"/>
+                <field name="reciepent"/>
+                <filter name="delivered" string="Delivered" domain="[('order_status', '=', 'delivered')]"/>
+                <filter name="not_canceled" string="Not Canceled" domain="[('order_status', '!=', 'canceled')]"/>
+                <separator/>
+                <filter name="filter_invoice_date" string="Invoice Date" date="invoice_date"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_recipient" string="Recipient" context="{'group_by': 'reciepent'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'order_status'}"/>
+                    <filter name="group_month" string="Invoice Month" context="{'group_by': 'invoice_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="darog_company_profit_action" model="ir.actions.act_window">
+        <field name="name">Profit</field>
+        <field name="res_model">darog.profit</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No orders yet</p>
+            <p>Every order appears here automatically. Each order also shows its profit in its Profit tab.</p>
+        </field>
+    </record>
+</odoo>

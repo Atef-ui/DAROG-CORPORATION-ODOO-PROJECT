@@ -1,8 +1,10 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_darog_company,darog.company,model_darog_company,,1,1,1,1
-access_darog_order,darog.order,model_darog_order,,1,1,1,1
-access_darog_item,darog.item,model_darog_item,,1,1,1,1
-access_darog_booking,darog.booking,model_darog_booking,,1,1,1,1
-access_darog_reciepent,darog.reciepent,model_darog_reciepent,,1,1,1,1
-access_darog_measurement,darog.measurement,model_darog_measurement,,1,1,1,1
-access_darog_bank,darog.bank,model_darog_bank,,1,1,1,1
+access_darog_company,darog.company,model_darog_company,base.group_user,1,1,1,1
+access_darog_order,darog.order,model_darog_order,base.group_user,1,1,1,1
+access_darog_item,darog.item,model_darog_item,base.group_user,1,1,1,1
+access_darog_booking,darog.booking,model_darog_booking,base.group_user,1,1,1,1
+access_darog_reciepent,darog.reciepent,model_darog_reciepent,base.group_user,1,1,1,1
+access_darog_measurement,darog.measurement,model_darog_measurement,base.group_user,1,1,1,1
+access_darog_bank,darog.bank,model_darog_bank,base.group_user,1,1,1,1
+access_darog_profit,darog.profit,model_darog_profit,base.group_user,1,1,1,1
+access_darog_buyer,darog.buyer,model_darog_buyer,base.group_user,1,1,1,1

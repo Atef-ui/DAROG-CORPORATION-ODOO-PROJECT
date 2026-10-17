@@ -157,7 +157,7 @@
                                     <t t-if="item.name in ['PRE-PACK: MILKY WHITE','PRINTED POLY: MILKY WHITE']">
                                         <tr style="border-bottom:0px solid white;border-top:0px solid white;">
                                             <td></td>
-                                            <td style="font-size:12px;">L - <t t-esc="measurement.length"/> <t t-esc="measurement.measure"/> + AD - <t t-esc="measurement.adhesive"/> <t t-esc="measurement.measure"/> , W - <t t-esc="measurement.width"/> <t t-esc="measurement.measure"/> </td>
+                                            <td style="font-size:12px;">L - <t t-esc="measurement.length"/> <t t-esc="(measurement.measure or '').upper()"/> + AD - <t t-esc="measurement.adhesive"/> <t t-esc="(measurement.measure or '').upper()"/> , W - <t t-esc="measurement.width"/> <t t-esc="(measurement.measure or '').upper()"/> </td>
                                             <td style="text-align:center; font-size:12px;">
                                                 <p style="margin:0;"><t t-esc="measurement.quantity"/></p>
                                             </td>
@@ -168,7 +168,7 @@
                                     <t t-elif="item.name not in ['PRE-PACK: MILKY WHITE','PRINTED-POLY: MILKY WHITE','PAPER GUMTAPE']">
                                         <tr style="border-bottom:0px solid white;border-top:0px solid white;">
                                             <td></td>
-                                            <td style="font-size:12px;">L - <t t-esc="measurement.length"/> <t t-esc="measurement.measure"/> X W - <t t-esc="measurement.width"/> <t t-esc="measurement.measure"/></td>
+                                            <td style="font-size:12px;">L - <t t-esc="measurement.length"/> <t t-esc="(measurement.measure or '').upper()"/> X W - <t t-esc="measurement.width"/> <t t-esc="(measurement.measure or '').upper()"/></td>
                                             <td style="text-align:center; font-size:12px;"><t t-esc="measurement.quantity"/></td>
                                             <td style="text-align:center; font-size:12px;">$<t t-esc="measurement.per_unit_price"/></td>
                                             <td style="text-align:center; font-size:12px;">$<t t-esc="measurement.total_price"/></td>

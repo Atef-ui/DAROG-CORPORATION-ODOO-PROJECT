@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Runs on every install/upgrade: give orders created before this existed their Profit row -->
+    <function model="darog.order" name="_ensure_profit_records"/>
+</odoo>

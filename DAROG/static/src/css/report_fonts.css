@@ -1,0 +1,31 @@
+/*
+ * Tinos is bundled so the documents print the same on every server, whatever
+ * fonts its operating system has and whether or not it can reach Google Fonts.
+ * The templates ask for "Times New Roman", then "Tinos": Tinos has exactly the
+ * same character widths as Times New Roman, so spacing never changes.
+ * Font license: static/fonts/LICENSE.txt (Apache 2.0).
+ */
+@font-face {
+    font-family: "Tinos";
+    src: url("/DAROG/static/fonts/Tinos-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Tinos";
+    src: url("/DAROG/static/fonts/Tinos-Bold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Tinos";
+    src: url("/DAROG/static/fonts/Tinos-Italic.ttf") format("truetype");
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: "Tinos";
+    src: url("/DAROG/static/fonts/Tinos-BoldItalic.ttf") format("truetype");
+    font-weight: bold;
+    font-style: italic;
+}

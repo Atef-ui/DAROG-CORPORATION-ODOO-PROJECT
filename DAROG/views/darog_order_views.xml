@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="darog_company_orders_tree_view" model="ir.ui.view">
+        <field name="name">darog.order.list</field>
+        <field name="model">darog.order</field>
+        <field name="arch" type="xml">
+            <list string="Orders" decoration-muted="order_status == 'canceled'">
+                <field name="pi_number" string="Invoice No" invisible="not invoice_no"/>
+                <field name="invoice_no" column_invisible="True"/>
+                <field name="reciepent_id"/>
+                <field name="invoice_date" string="Invoice Date"/>
+                <field name="lc_no" optional="show"/>
+                <field name="incoming_date" string="L/C Date" optional="show"/>
+                <field name="export_lc_no" optional="hide"/>
+                <field name="delivery_challan_date" optional="hide"/>
+                <field name="total_quantity" optional="hide" sum="Total"/>
+                <field name="total_amount" sum="Total"/>
+                <field name="order_status" widget="badge"
+                       decoration-info="order_status == 'new'"
+                       decoration-warning="order_status == 'in_progress'"
+                       decoration-success="order_status == 'delivered'"
+                       decoration-danger="order_status == 'canceled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="darog_order_kanban_view" model="ir.ui.view">
+        <field name="name">darog.order.kanban</field>
+        <field name="model">darog.order</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" quick_create="false">
+                <field name="invoice_no"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <field name="reciepent_id" class="fw-bold fs-5"/>
+                            <field name="total_amount" class="fw-bold"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="pi_number" invisible="not invoice_no"/>
+                            <span invisible="not invoice_date"> · <field name="invoice_date"/></span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <span class="text-muted small"><span invisible="not lc_no">L/C <field name="lc_no"/></span></span>
+                            <field name="order_status" widget="badge"
+                                   decoration-info="order_status == 'new'"
+                                   decoration-warning="order_status == 'in_progress'"
+                                   decoration-success="order_status == 'delivered'"
+                                   decoration-danger="order_status == 'canceled'"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="darog_company_orders_form_view" model="ir.ui.view">
+        <field name="name">darog.order.form</field>
+        <field name="model">darog.order</field>
+        <field name="arch" type="xml">
+            <form string="Order">
+                <header>
+                    <button name="action_backfill_invoice_numbers" type="object" string="Renumber All Invoices"
+                            class="btn-secondary"
+                            help="Reassign invoice numbers for every order, per recipient and year, oldest first."
+                            confirm="This renumbers the invoices of ALL orders (per recipient and year, oldest first). Numbers you have already printed may change. Continue?"/>
+                    <field name="order_status" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Delivered" bg_color="text-bg-success" invisible="order_status != 'delivered'"/>
+                    <widget name="web_ribbon" title="Canceled" bg_color="text-bg-danger" invisible="order_status != 'canceled'"/>
+                    <div class="oe_title">
+                        <span class="o_form_label">Proforma Invoice</span>
+                        <h1>
+                            <field name="pi_number" readonly="1" invisible="not invoice_no"/>
+                            <span invisible="invoice_no">New Order</span>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Parties">
+                            <field name="reciepent_id" placeholder="Who opened the L/C?"/>
+                            <field name="company_id"/>
+                            <field name="buyer_id" options="{'no_create_edit': True}"/>
+                            <field name="issuing_bank_id" invisible="not reciepent_id"/>
+                        </group>
+                        <group string="Invoice">
+                            <field name="invoice_no"/>
+                            <field name="invoice_date"/>
+                            <field name="payment_within"/>
+                            <field name="total_amount"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Order Lines" name="lines">
+                            <field name="measurement_ids" context="{'default_orders_id': id}">
+                                <list editable="bottom">
+                                    <field name="print_style" column_invisible="True"/>
+                                    <field name="items_id" required="1"/>
+                                    <field name="length" invisible="print_style == 'gumtape'"/>
+                                    <field name="width" invisible="print_style == 'gumtape'"/>
+                                    <field name="adhesive" invisible="print_style != 'poly'"/>
+                                    <field name="measure" invisible="print_style == 'gumtape'"/>
+                                    <field name="yards" invisible="print_style != 'gumtape'"/>
+                                    <field name="quantity"/>
+                                    <field name="quantity_unit"/>
+                                    <field name="per_unit_price"/>
+                                    <field name="total_price"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer" colspan="2">
+                                <field name="total_quantity"/>
+                                <field name="total_roll" invisible="not total_roll"/>
+                                <field name="total_amount" class="oe_subtotal_footer_separator"/>
+                            </group>
+                            <div class="clearfix"/>
+                            <div class="text-muted fst-italic" invisible="not total_amount">
+                                In words: <field name="amount_in_words" class="d-inline"/>
+                            </div>
+                        </page>
+                        <page string="L/C &amp; Dates" name="lc">
+                            <group>
+                                <group string="Back-to-back L/C">
+                                    <field name="lc_no"/>
+                                    <field name="incoming_date"/>
+                                    <field name="bank_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Export L/C">
+                                    <field name="export_lc_no"/>
+                                    <field name="export_date"/>
+                                </group>
+                                <group string="Delivery">
+                                    <field name="delivery_challan_date"/>
+                                    <field name="delivery_date"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Bookings &amp; Weight" name="bookings">
+                            <group>
+                                <group string="Bookings">
+                                    <field name="booking_type" string="Print As"/>
+                                </group>
+                                <group string="Weight">
+                                    <field name="net_weight"/>
+                                    <field name="gross_weight"/>
+                                    <field name="goods_weight" invisible="net_weight or gross_weight"/>
+                                </group>
+                            </group>
+                            <field name="booking_ids">
+                                <list editable="bottom">
+                                    <field name="booking_no"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Print Options" name="print_options">
+                            <p class="text-muted">Choose which recipient numbers appear on the documents.</p>
+                            <group>
+                                <group>
+                                    <field name="tin_no_needed" widget="boolean_toggle"/>
+                                    <field name="bin_no_needed" widget="boolean_toggle"/>
+                                    <field name="irc_no_needed" widget="boolean_toggle"/>
+                                    <field name="erc_no_needed" widget="boolean_toggle"/>
+                                </group>
+                                <group>
+                                    <field name="bond_reg_no_needed" widget="boolean_toggle"/>
+                                    <field name="bb_no_needed" widget="boolean_toggle"/>
+                                    <field name="ref_no_needed" widget="boolean_toggle"/>
+                                    <field name="ref_no" invisible="not ref_no_needed"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Items" name="items">
+                            <p class="text-muted">Filled automatically from the order lines. Items print in this list's order, gum tape last.</p>
+                            <field name="items_id" widget="many2many_tags"/>
+                        </page>
+                        <page string="Profit" name="profit">
+                            <group>
+                                <group>
+                                    <field name="total_amount"/>
+                                    <field name="total_cost"/>
+                                    <field name="profit" decoration-success="profit &gt; 0" decoration-danger="profit &lt; 0"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="darog_order_search_view" model="ir.ui.view">
+        <field name="name">darog.order.search</field>
+        <field name="model">darog.order</field>
+        <field name="arch" type="xml">
+            <search string="Orders">
+                <field name="reciepent_id"/>
+                <field name="invoice_no"/>
+                <field name="lc_no"/>
+                <field name="export_lc_no"/>
+                <field name="booking_ids" string="Booking No" filter_domain="[('booking_ids.booking_no', 'ilike', self)]"/>
+                <field name="items_id" string="Item"/>
+                <filter name="status_new" string="New" domain="[('order_status', '=', 'new')]"/>
+                <filter name="status_in_progress" string="In Progress" domain="[('order_status', '=', 'in_progress')]"/>
+                <filter name="status_delivered" string="Delivered" domain="[('order_status', '=', 'delivered')]"/>
+                <filter name="status_canceled" string="Canceled" domain="[('order_status', '=', 'canceled')]"/>
+                <separator/>
+                <filter name="filter_invoice_date" string="Invoice Date" date="invoice_date"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_recipient" string="Recipient" context="{'group_by': 'reciepent_id'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'order_status'}"/>
+                    <filter name="group_month" string="Invoice Month" context="{'group_by': 'invoice_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="darog_company_orders_action" model="ir.actions.act_window">
+        <field name="name">Orders</field>
+        <field name="res_model">darog.order</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="darog_order_search_view"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first export order</p>
+            <p>Add the recipient, L/C details and order lines, then print every document from the Print menu.</p>
+        </field>
+    </record>
+</odoo>
