@@ -18,6 +18,7 @@ Packing List, Certificate of Origin and Transportation.
         "views/darog_company_views.xml",
         "views/darog_master_data_views.xml",
         "views/darog_profit_views.xml",
+        "wizard/darog_send_documents_views.xml",
         "views/darog_menus.xml",
         "data/darog_data.xml",
         "reports/darog_reports.xml",
@@ -34,6 +35,7 @@ Packing List, Certificate of Origin and Transportation.
         "reports/darog_templates_origin.xml",
         "reports/darog_reports_transport.xml",
         "reports/darog_templates_transport.xml",
+        "reports/darog_pad.xml",
     ],
     "assets": {
         "web.assets_backend": [
@@ -41,6 +43,7 @@ Packing List, Certificate of Origin and Transportation.
         ],
         "web.report_assets_common": [
             "DAROG/static/src/css/report_fonts.css",
+            "DAROG/static/src/css/report_pad.css",
         ],
     },
     "installable": True,

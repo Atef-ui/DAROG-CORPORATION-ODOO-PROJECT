@@ -8,3 +8,4 @@ access_darog_measurement,darog.measurement,model_darog_measurement,base.group_us
 access_darog_bank,darog.bank,model_darog_bank,base.group_user,1,1,1,1
 access_darog_profit,darog.profit,model_darog_profit,base.group_user,1,1,1,1
 access_darog_buyer,darog.buyer,model_darog_buyer,base.group_user,1,1,1,1
+access_darog_send_documents,darog.send.documents,model_darog_send_documents,base.group_user,1,1,1,1

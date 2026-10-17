@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="darog_send_documents_form" model="ir.ui.view">
+        <field name="name">darog.send.documents.form</field>
+        <field name="model">darog.send.documents</field>
+        <field name="arch" type="xml">
+            <form string="Send by Email">
+                <field name="order_id" invisible="1"/>
+                <group>
+                    <field name="email_to" placeholder="e.g. buyer@example.com, bank@example.com"/>
+                    <field name="email_cc" placeholder="Optional"/>
+                    <field name="subject"/>
+                </group>
+                <field name="body" placeholder="Message" nolabel="1"/>
+                <separator string="Attach these PDFs"/>
+                <group>
+                    <group>
+                        <field name="attach_proforma"/>
+                        <field name="attach_commercial"/>
+                        <field name="attach_bill"/>
+                        <field name="attach_delivery"/>
+                    </group>
+                    <group>
+                        <field name="attach_packing"/>
+                        <field name="attach_origin"/>
+                        <field name="attach_transport"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_send" type="object" string="Send" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="darog_send_documents_action" model="ir.actions.act_window">
+        <field name="name">Send by Email</field>
+        <field name="res_model">darog.send.documents</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

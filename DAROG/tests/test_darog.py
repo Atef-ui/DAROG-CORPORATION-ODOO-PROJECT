@@ -1,8 +1,11 @@
 import base64
+import io
 from datetime import date
 
+from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import file_open
+from odoo.tools.pdf import PdfFileReader
 
 REPORTS = [
     "DAROG.report_darog",
@@ -165,3 +168,174 @@ class TestDarog(TransactionCase):
             html = Report._render_qweb_html(report, full.ids)[0].decode()
             self.assertIn("10 INCH", html, f"{report}: size units print in capitals")
             self.assertNotIn(" inch", html, report)
+
+    def test_send_documents_by_email(self):
+        self.recipient.email = "buyer@example.com"
+        order = self._order(invoice_date=date(2026, 3, 2), incoming_date=date(2026, 3, 10),
+                            export_date=date(2026, 2, 20), lc_no="LC-9", measurement_ids=[
+            (0, 0, {"items_id": self.poly.id, "quantity": 10, "per_unit_price": 2}),
+        ])
+        Wizard = self.env["darog.send.documents"].with_context(default_order_id=order.id)
+
+        wizard = Wizard.create({})
+        self.assertEqual(wizard.email_to, "buyer@example.com", "To is filled from the recipient")
+        self.assertIn("DC/CI/2026/005", wizard.subject)
+        self.assertIn("Darog Corporation", wizard.body)
+
+        wizard.write({"attach_bill": False, "attach_transport": False})
+        names = [name for name, _content, _mime in wizard._attachments()]
+        self.assertEqual(names, [
+            "Proforma Invoice - DC-CI-2026-005.pdf",
+            "Commercial Invoice - DC-CI-2026-005.pdf",
+            "Delivery Challan - DC-CI-2026-005.pdf",
+            "Packing List - DC-CI-2026-005.pdf",
+            "Certificate of Origin - DC-CI-2026-005.pdf",
+        ])
+
+        self.env["ir.mail_server"].search([]).active = False  # start with no server
+        with self.assertRaisesRegex(UserError, "outgoing email server"):
+            wizard.action_send()
+        self.env["ir.mail_server"].create({
+            "name": "Gmail", "smtp_host": "smtp.gmail.com", "smtp_port": 465, "smtp_encryption": "ssl",
+            "smtp_user": "sender@gmail.com", "smtp_pass": "x",
+        })
+        server = self.env["ir.mail_server"].search([], limit=1)
+        self.assertEqual(wizard._sender(server), '"Darog Corporation" <sender@gmail.com>', "sender shows the company name")
+        self.company.email_sender_name = "Darog Accounts"
+        self.assertEqual(wizard._sender(server), '"Darog Accounts" <sender@gmail.com>')
+        wizard.email_to = "anyone@example.org, second@example.net"
+        result = wizard.action_send()
+        self.assertIn("Sent 5 document(s) to anyone@example.org, second@example.net", result["params"]["message"])
+
+        with self.assertRaisesRegex(UserError, "not a valid email"):
+            Wizard.create({"email_to": "not-an-email"}).action_send()
+        with self.assertRaisesRegex(UserError, "at least one document"):
+            Wizard.create({field: False for field in (
+                "attach_proforma", "attach_commercial", "attach_bill", "attach_delivery",
+                "attach_packing", "attach_origin", "attach_transport")}).action_send()
+
+        undated = self._order(measurement_ids=[(0, 0, {"items_id": self.poly.id, "quantity": 1})])
+        result = Wizard.with_context(default_order_id=undated.id).create({"email_to": "a@example.com"}).action_send()
+        self.assertIn("Sent 7 document(s)", result["params"]["message"], "orders with empty dates can be sent")
+
+        action = order.action_send_documents()
+        self.assertEqual(action["res_model"], "darog.send.documents")
+        self.assertEqual(action["context"]["default_order_id"], order.id)
+
+    def test_pad_background(self):
+        pad_format = self.env.ref("DAROG.paperformat_darog_pad")
+        for xmlid in ("action_report_darog", "action_report_darog_com",
+                      "action_report_darog_delivery", "action_report_darog_packing"):
+            self.assertEqual(self.env.ref(f"DAROG.{xmlid}").paperformat_id, pad_format, xmlid)
+        for xmlid in ("action_report_darog_bill", "action_report_darog_origin", "action_report_darog_transport"):
+            self.assertNotEqual(self.env.ref(f"DAROG.{xmlid}").paperformat_id, pad_format, f"{xmlid} stays plain")
+        self.assertGreaterEqual(pad_format.margin_top, 42, "text starts below the pad header (41.5 mm)")
+        self.assertGreaterEqual(pad_format.margin_bottom, 19, "text stops above the pad footer (278.4 mm)")
+
+        from reportlab.lib.pagesizes import A4
+        from reportlab.pdfgen import canvas
+        plain = io.BytesIO()
+        pdf = canvas.Canvas(plain, pagesize=A4)
+        for text in ("PAGE ONE", "PAGE TWO"):
+            pdf.drawString(100, 400, text)
+            pdf.showPage()
+        pdf.save()
+        padded = self.env["ir.actions.report"]._darog_add_pad(plain.getvalue())
+        pages = PdfFileReader(io.BytesIO(padded)).pages
+        self.assertEqual(len(pages), 2, "every page is kept")
+        for page in pages:
+            box = [float(value) for value in (page.mediabox if hasattr(page, "mediabox") else page.mediaBox)]
+            self.assertAlmostEqual(box[2] - box[0], A4[0], places=0)
+            self.assertAlmostEqual(box[3] - box[1], A4[1], places=0)
+        self.assertGreater(len(padded), len(plain.getvalue()) + 50_000, "the pad is drawn on each page")
+
+    def test_big_orders_fit_on_one_page(self):
+        import math
+        from unittest.mock import patch
+
+        from reportlab.lib.pagesizes import A4
+        from reportlab.pdfgen import canvas
+
+        from odoo.addons.DAROG.models.ir_actions_report import FIT_STEPS, MIN_SCALE, _page_count
+
+        def pdf_with(pages):
+            buffer = io.BytesIO()
+            pdf = canvas.Canvas(buffer, pagesize=A4)
+            for _page in range(pages):
+                pdf.showPage()
+            pdf.save()
+            return buffer.getvalue()
+
+        Report = self.env["ir.actions.report"]
+        content = {"pages": 2.6}  # how many pages the order takes at full size
+        scales = []
+
+        def render_at(_self, report_ref, res_id, data, scale):
+            scales.append(scale)
+            return pdf_with(max(1, math.ceil(content["pages"] * scale - 1e-9)))
+
+        with patch.object(type(Report), "_darog_render_at", render_at):
+            result = Report._darog_render_one_page("DAROG.report_darog_com", 1, None)
+            self.assertEqual(_page_count(result), 1, "a big order ends up on one page")
+            best = max(s for s in scales if content["pages"] * s <= 1)
+            self.assertGreater(best, 1 / 2.6 - 0.04, "shrunk only as much as needed")
+            self.assertLessEqual(len(scales), FIT_STEPS + 2, "a few tries only")
+
+            scales.clear()
+            content["pages"] = 0.8
+            Report._darog_render_one_page("DAROG.report_darog_com", 1, None)
+            self.assertEqual(scales, [1.0], "an order that fits is made once, at full size")
+
+            scales.clear()
+            content["pages"] = 10
+            Report._darog_render_one_page("DAROG.report_darog_com", 1, None)
+            self.assertEqual(min(scales), MIN_SCALE, "never shrinks below the minimum")
+
+    def test_no_line_under_the_header(self):
+        order = self._order(invoice_date=date(2026, 3, 2), incoming_date=date(2026, 3, 10),
+                            export_date=date(2026, 2, 20))
+        for report in ("DAROG.report_darog", "DAROG.report_darog_com", "DAROG.report_darog_delivery",
+                       "DAROG.report_darog_packing"):
+            html = self.env["ir.actions.report"]._render_qweb_html(report, order.ids)[0].decode()
+            logo_css = html[html.index(".logo{"):html.index("}", html.index(".logo{"))]
+            self.assertNotIn("2px solid black", logo_css, report)
+
+    def test_documents_print_with_empty_dates(self):
+        # Only the proforma invoice date is set: L/C, export and delivery dates are empty.
+        order = self._order(invoice_date=date(2026, 3, 2), measurement_ids=[
+            (0, 0, {"items_id": self.poly.id, "quantity": 10, "per_unit_price": 2}),
+        ])
+        self.assertFalse(order.incoming_date or order.export_date or order.delivery_date)
+        Report = self.env["ir.actions.report"]
+        for report in REPORTS:
+            html = Report._render_qweb_html(report, order.ids)[0].decode()
+            self.assertTrue(html, report)
+        html = Report._render_qweb_html("DAROG.report_darog_com", order.ids)[0].decode()
+        self.assertIn("DC/CI/2026/005", html, "without an L/C date the number uses the invoice year")
+        nothing = self._order(invoice_date=False)
+        for report in REPORTS:
+            self.assertTrue(Report._render_qweb_html(report, nothing.ids)[0], f"{report} with no dates at all")
+
+    def test_profit_grouping_and_totals(self):
+        other = self.env["darog.reciepent"].create({"name": "XYZ Fashions"})
+        line = {"items_id": self.poly.id, "quantity": 100, "cost_price": 24}  # cost 100 * 24 / 120 = $20
+        a = self._order(measurement_ids=[(0, 0, {**line, "per_unit_price": 0.5})], order_status="delivered")
+        b = self._order(measurement_ids=[(0, 0, {**line, "per_unit_price": 0.3})])
+        c = self._order(reciepent_id=other.id, measurement_ids=[(0, 0, {**line, "per_unit_price": 0.1})])
+        Profit = self.env["darog.profit"]
+        domain = [("order_id", "in", (a | b | c).ids)]
+
+        groups = {g["reciepent_id"][1]: g for g in Profit.read_group(
+            domain, ["total_amount:sum", "total_cost:sum", "profit:sum"], ["reciepent_id"])}
+        self.assertAlmostEqual(groups["ABC Garments Ltd."]["total_amount"], 80)
+        self.assertAlmostEqual(groups["ABC Garments Ltd."]["total_cost"], 40)
+        self.assertAlmostEqual(groups["ABC Garments Ltd."]["profit"], 40)
+        self.assertAlmostEqual(groups["XYZ Fashions"]["profit"], -10, msg="losses count too")
+
+        row = Profit.search([("order_id", "=", a.id)])
+        self.assertAlmostEqual(row.margin, 0.6, msg="profit 30 on a total of 50")
+        a.measurement_ids.per_unit_price = 1.0
+        self.assertAlmostEqual(row.profit, 80, msg="the profit row follows price changes")
+        b.order_status = "canceled"
+        self.assertEqual(Profit.search_count(domain + [("order_status", "!=", "canceled")]), 2)
+

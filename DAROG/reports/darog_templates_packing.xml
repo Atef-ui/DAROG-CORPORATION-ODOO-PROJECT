@@ -22,8 +22,8 @@
                     text-align: center;
                     margin-top:0 !important;
                     padding: 0 !important;
-                    border-bottom: 2px solid black;
-                    margin-bottom: 20px;
+                    border-bottom: 0px solid white; /* no line under the pad header */
+                    margin-bottom: 0px;
                     justify-content: center;
                     align-items: center;
                     width: 100%;
@@ -79,18 +79,18 @@
                 </div>
                 <!-- LOGO SECTION END-->
                 <!-- MAIN BODY START-->
-                <div class="page" style="padding-top: 150px !important;">
+                <div class="page" style="padding-top: 0px !important;">
                     <div style="text-align: center; padding-top: 20px;">
                         <h3 style="display: inline-block; text-align: center; padding-top: 0px !important; padding-bottom: 0px !important; border: 1px solid black;padding-left: 5px; padding-right: 5px;"><strong>PACKING LIST</strong></h3>
                     </div>
                     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;" class="things">
                         <tr>
                             <td style="text-align: left; border-top: 1px solid black; border-bottom: 1px solid black;">NAME &amp; ADDRESS :-</td>
-                            <td colspan="2" style="border-top: 1px solid black !important;"><strong>NO. : <span style="padding-left: 12px;">DC/CI/<t t-esc="o.incoming_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></span></strong></td>
+                            <td colspan="2" style="border-top: 1px solid black !important;"><strong>NO. : <span style="padding-left: 12px;">DC/CI/<t t-esc="(o.incoming_date or o.invoice_date).year if (o.incoming_date or o.invoice_date) else ''"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></span></strong></td>
                         </tr>
                         <tr>
                             <td style="border-bottom: 0px solid white !important;"> </td>
-                            <td colspan="2" style="border-top: 1px solid black;"><strong>DATE : <span style="padding-left: 10px;"><span t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                            <td colspan="2" style="border-top: 1px solid black;"><strong>DATE : <span style="padding-left: 10px;"><span t-esc="o.delivery_challan_date and o.delivery_challan_date.strftime('%d.%m.%Y') or ''"/></span></strong></td>
                         </tr>
                         <tr>
                             <td style="border-bottom: 0px solid white; !important;">
@@ -99,7 +99,7 @@
                             </td>
                             <td colspan="2">
                                 <strong> NO OF L/C : <span t-field="o.lc_no"/></strong><br/>
-                                <strong> DATE : <span t-esc="o.incoming_date.strftime('%d.%m.%Y')"/></strong>
+                                <strong> DATE : <span t-esc="o.incoming_date and o.incoming_date.strftime('%d.%m.%Y') or ''"/></strong>
                             </td>
                         </tr>
                         <tr>
@@ -121,7 +121,7 @@
                         <tr>
                             <td>
                                 <strong><span t-field="o.export_lc_no"/></strong>
-                                <strong style="padding-left: 20px;"> DATE : <span t-esc="o.export_date.strftime('%d.%m.%Y')"/></strong><br/>
+                                <strong style="padding-left: 20px;"> DATE : <span t-esc="o.export_date and o.export_date.strftime('%d.%m.%Y') or ''"/></strong><br/>
                                 <table style="border: 0px solid white !important;" class="hala">
                                     <t t-set="cnt" t-value="0"/>
                                     <t t-if="o.tin_no_needed">
@@ -240,8 +240,8 @@
                                 <strong>BENEFICIARY BIN NO : 000008386-301</strong>
                             </td>
                             <td colspan="2">
-                                <strong>DC/<t t-esc="o.incoming_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></strong>
-                                <strong style="padding-left: 20px;"> DATE : <span t-esc="o.invoice_date.strftime('%d.%m.%Y')"/></strong><br/><br/>
+                                <strong>DC/<t t-esc="(o.incoming_date or o.invoice_date).year if (o.incoming_date or o.invoice_date) else ''"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></strong>
+                                <strong style="padding-left: 20px;"> DATE : <span t-esc="o.invoice_date and o.invoice_date.strftime('%d.%m.%Y') or ''"/></strong><br/><br/>
                                 <strong>H.S. CODE : 6217.10.00.</strong>
                             </td>
                         </tr>

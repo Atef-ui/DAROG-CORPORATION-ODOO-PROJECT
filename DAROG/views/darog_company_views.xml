@@ -34,6 +34,9 @@
                         <group string="Profit">
                             <field name="exchange_rate"/>
                         </group>
+                        <group string="Email">
+                            <field name="email_sender_name" placeholder="Same as the company name"/>
+                        </group>
                     </group>
                     <notebook>
                         <page string="Certificate of Origin" name="certificate">

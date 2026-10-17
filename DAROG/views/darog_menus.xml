@@ -13,4 +13,6 @@
     <menuitem id="darog_menu_buyers" name="Buyers" parent="darog_menu_config" action="darog_buyer_action" sequence="40"/>
     <menuitem id="darog_menu_measurements" name="Order Lines" parent="darog_menu_config" action="darog_company_measurement_action" sequence="50"/>
     <menuitem id="darog_menu_bookings" name="Bookings" parent="darog_menu_config" action="darog_company_booking_action" sequence="60"/>
+    <menuitem id="darog_menu_mail_server" name="Outgoing Email Server" parent="darog_menu_config"
+              action="base.action_ir_mail_server_list" groups="base.group_system" sequence="70"/>
 </odoo>

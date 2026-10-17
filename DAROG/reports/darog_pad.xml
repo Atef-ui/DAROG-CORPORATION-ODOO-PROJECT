@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Documents printed on the pad (static/src/img/Pad.pdf, added in models/ir_actions_report.py).
+         The margins keep every page's text clear of the pad: its header ends at 41.5 mm from the top
+         and its footer starts at 278.4 mm. Bill of Exchange, Certificate of Origin and Transportation keep the plain format. -->
+    <record id="paperformat_darog_pad" model="report.paperformat">
+        <field name="name">DAROG Pad</field>
+        <field name="default">False</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="margin_top">45</field>
+        <field name="margin_bottom">23</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_darog" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_darog_pad"/>
+    </record>
+    <record id="action_report_darog_com" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_darog_pad"/>
+    </record>
+    <!-- Bill of Exchange: no pad, back on its original paper format. -->
+    <record id="action_report_darog_bill" model="ir.actions.report">
+        <field name="paperformat_id" ref="report_paperformate"/>
+    </record>
+    <record id="action_report_darog_delivery" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_darog_pad"/>
+    </record>
+    <record id="action_report_darog_packing" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_darog_pad"/>
+    </record>
+</odoo>

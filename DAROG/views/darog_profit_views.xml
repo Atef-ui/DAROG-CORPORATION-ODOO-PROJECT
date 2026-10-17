@@ -4,19 +4,24 @@
         <field name="name">darog.profit.list</field>
         <field name="model">darog.profit</field>
         <field name="arch" type="xml">
-            <list string="Profit">
+            <list string="Profit" create="0" decoration-muted="order_status == 'canceled'">
                 <field name="order_id"/>
-                <field name="reciepent" optional="hide"/>
+                <field name="reciepent_id" optional="show"/>
+                <field name="buyer_id" optional="hide"/>
                 <field name="invoice_no" optional="hide"/>
                 <field name="invoice_date" optional="show"/>
+                <field name="delivery_date" optional="hide"/>
                 <field name="order_status" widget="badge" optional="show"
                        decoration-info="order_status == 'new'"
                        decoration-warning="order_status == 'in_progress'"
                        decoration-success="order_status == 'delivered'"
                        decoration-danger="order_status == 'canceled'"/>
-                <field name="total_amount"/>
-                <field name="total_cost"/>
-                <field name="profit" decoration-danger="profit &lt; 0" decoration-success="profit &gt; 0"/>
+                <field name="total_amount" sum="Total"/>
+                <field name="total_cost" sum="Total"/>
+                <field name="profit" sum="Total" class="fw-bold"
+                       decoration-danger="profit &lt; 0" decoration-success="profit &gt; 0"/>
+                <field name="margin" widget="percentage" optional="show"
+                       decoration-danger="margin &lt; 0"/>
             </list>
         </field>
     </record>
@@ -25,24 +30,60 @@
         <field name="name">darog.profit.form</field>
         <field name="model">darog.profit</field>
         <field name="arch" type="xml">
-            <form string="Profit">
+            <form string="Profit" create="0">
                 <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Order</span>
+                        <h1><field name="order_id" readonly="1"/></h1>
+                    </div>
                     <group>
-                        <group>
-                            <field name="order_id"/>
-                            <field name="reciepent"/>
+                        <group string="Order">
+                            <field name="reciepent_id"/>
+                            <field name="buyer_id"/>
                             <field name="invoice_no"/>
                             <field name="invoice_date"/>
-                            <field name="order_status"/>
+                            <field name="delivery_date"/>
+                            <field name="order_status" widget="badge"/>
                         </group>
-                        <group>
+                        <group string="Profit (USD)">
                             <field name="total_amount"/>
                             <field name="total_cost"/>
-                            <field name="profit" decoration-success="profit &gt; 0" decoration-danger="profit &lt; 0"/>
+                            <field name="profit" class="fw-bold"
+                                   decoration-success="profit &gt; 0" decoration-danger="profit &lt; 0"/>
+                            <field name="margin" widget="percentage"/>
                         </group>
                     </group>
+                    <p class="text-muted">
+                        Cost is each order line's cost price × quantity, divided by the company's cost exchange rate.
+                        Change prices on the order itself.
+                    </p>
                 </sheet>
             </form>
+        </field>
+    </record>
+
+    <record id="darog_profit_pivot_view" model="ir.ui.view">
+        <field name="name">darog.profit.pivot</field>
+        <field name="model">darog.profit</field>
+        <field name="arch" type="xml">
+            <pivot string="Profit Analysis" sample="1">
+                <field name="reciepent_id" type="row"/>
+                <field name="invoice_date" interval="month" type="col"/>
+                <field name="total_amount" type="measure"/>
+                <field name="total_cost" type="measure"/>
+                <field name="profit" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="darog_profit_graph_view" model="ir.ui.view">
+        <field name="name">darog.profit.graph</field>
+        <field name="model">darog.profit</field>
+        <field name="arch" type="xml">
+            <graph string="Profit" type="bar" sample="1">
+                <field name="invoice_date" interval="month"/>
+                <field name="profit" type="measure"/>
+            </graph>
         </field>
     </record>
 
@@ -52,15 +93,24 @@
         <field name="arch" type="xml">
             <search string="Profit">
                 <field name="order_id"/>
-                <field name="reciepent"/>
+                <field name="reciepent_id"/>
+                <field name="buyer_id"/>
                 <filter name="delivered" string="Delivered" domain="[('order_status', '=', 'delivered')]"/>
+                <filter name="open" string="New &amp; In Progress" domain="[('order_status', 'in', ('new', 'in_progress'))]"/>
                 <filter name="not_canceled" string="Not Canceled" domain="[('order_status', '!=', 'canceled')]"/>
+                <separator/>
+                <filter name="profitable" string="Profitable" domain="[('profit', '&gt;', 0)]"/>
+                <filter name="loss" string="Loss" domain="[('profit', '&lt;', 0)]"/>
                 <separator/>
                 <filter name="filter_invoice_date" string="Invoice Date" date="invoice_date"/>
                 <group expand="0" string="Group By">
-                    <filter name="group_recipient" string="Recipient" context="{'group_by': 'reciepent'}"/>
+                    <filter name="group_recipient" string="Recipient" context="{'group_by': 'reciepent_id'}"/>
+                    <filter name="group_buyer" string="Buyer" context="{'group_by': 'buyer_id'}"/>
                     <filter name="group_status" string="Status" context="{'group_by': 'order_status'}"/>
+                    <separator/>
                     <filter name="group_month" string="Invoice Month" context="{'group_by': 'invoice_date:month'}"/>
+                    <filter name="group_quarter" string="Invoice Quarter" context="{'group_by': 'invoice_date:quarter'}"/>
+                    <filter name="group_year" string="Invoice Year" context="{'group_by': 'invoice_date:year'}"/>
                 </group>
             </search>
         </field>
@@ -69,10 +119,13 @@
     <record id="darog_company_profit_action" model="ir.actions.act_window">
         <field name="name">Profit</field>
         <field name="res_model">darog.profit</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="search_view_id" ref="darog_profit_search_view"/>
+        <field name="context">{'search_default_not_canceled': 1, 'search_default_group_recipient': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No orders yet</p>
-            <p>Every order appears here automatically. Each order also shows its profit in its Profit tab.</p>
+            <p>Every order appears here automatically, with its total, cost and profit.
+               Group by recipient, buyer, status or month to see totals.</p>
         </field>
     </record>
 </odoo>

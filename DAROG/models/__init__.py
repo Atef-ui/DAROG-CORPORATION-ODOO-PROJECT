@@ -7,3 +7,4 @@ from . import darog_booking
 from . import darog_measurement
 from . import darog_order
 from . import darog_profit
+from . import ir_actions_report

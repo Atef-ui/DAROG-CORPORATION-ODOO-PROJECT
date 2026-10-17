@@ -57,12 +57,12 @@
                     <div class="page">
                         <table style="border: 0px solid white !important; width: 100%; border-collapse: collapse;">
                             <tr >
-                                <td style="text-align: left;" class="faka">DATE : <span style="padding-left: 5px;"><t t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/></span></td>
-                                <td style="padding-left: 50px;" class="faka"> DC/CI/<t t-esc="o.invoice_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/>. </td>
+                                <td style="text-align: left;" class="faka">DATE : <span style="padding-left: 5px;"><t t-esc="o.delivery_challan_date and o.delivery_challan_date.strftime('%d.%m.%Y') or ''"/></span></td>
+                                <td style="padding-left: 50px;" class="faka"> DC/CI/<t t-esc="o.invoice_date.year if o.invoice_date else ''"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/>. </td>
                             </tr>
                             <tr>
                                 <td style="text-align: left;" class="faka">LETTER OF CREDIT NO.</td>
-                                <td class="faka">:<strong><span style="padding-left: 30px;"><t t-esc="o.lc_no"/></span><span style="padding-left: 20px;">DATE : <t t-esc="o.incoming_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                                <td class="faka">:<strong><span style="padding-left: 30px;"><t t-esc="o.lc_no"/></span><span style="padding-left: 20px;">DATE : <t t-esc="o.incoming_date and o.incoming_date.strftime('%d.%m.%Y') or ''"/></span></strong></td>
                             </tr>
                             <tr>
                                 <td class="faka">L/C ISSUING BANK NAME</td>
@@ -82,7 +82,7 @@
                             </tr>
                             <tr>
                                 <td class="faka"> INVOICE NO. </td>
-                                <td class="faka">:<span style="padding-left: 30px;"><strong>DC/<t t-esc="o.invoice_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/><span style="padding-left: 20px;">DATE : <t t-esc="o.invoice_date.strftime('%d.%m.%Y')"/></span>.</strong></span></td>
+                                <td class="faka">:<span style="padding-left: 30px;"><strong>DC/<t t-esc="o.invoice_date.year if o.invoice_date else ''"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/><span style="padding-left: 20px;">DATE : <t t-esc="o.invoice_date and o.invoice_date.strftime('%d.%m.%Y') or ''"/></span>.</strong></span></td>
                             </tr>
                             <tr>
                                 <td class="faka"> QUANTITY </td>
@@ -94,7 +94,7 @@
                             </tr>
                             <tr>
                                 <td></td>
-                                <td style="padding-left: 32px; padding-bottom: 10px;"><span><strong>DATE : <t t-esc="o.export_date.strftime('%d.%m.%Y')"/></strong></span></td>
+                                <td style="padding-left: 32px; padding-bottom: 10px;"><span><strong>DATE : <t t-esc="o.export_date and o.export_date.strftime('%d.%m.%Y') or ''"/></strong></span></td>
                             </tr>
                                     <t t-set="cnt" t-value="0"/>
                                     <t t-if="o.tin_no_needed">

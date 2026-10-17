@@ -72,13 +72,14 @@ class DarogOrder(models.Model):
     goods_weight = fields.Integer(string="Goods Weight (KG)", help="Only used when net and gross weight are empty.")
 
     # Totals
-    total_amount = fields.Float(compute="_compute_total_amount", digits=(16, 2), string="Total (USD)")
+    total_amount = fields.Float(compute="_compute_total_amount", store=True, digits=(16, 2), string="Total (USD)")
     total_quantity = fields.Float(compute="_compute_totals", digits=(16, 2), string="Total Dozens")
     total_roll = fields.Float(compute="_compute_totals", digits=(16, 2), string="Total Gum Tape")
     gumtape_yards = fields.Boolean(compute="_compute_totals", string="Gum Tape in Yards")
     amount_in_words = fields.Char(compute="_compute_amount_in_words")
-    total_cost = fields.Float(compute="_compute_profit", digits=(16, 2), string="Total Cost (USD)")
-    profit = fields.Float(compute="_compute_profit", digits=(16, 2), string="Profit (USD)")
+    # Stored so the Profit screen can group and total them.
+    total_cost = fields.Float(compute="_compute_profit", store=True, digits=(16, 2), string="Total Cost (USD)")
+    profit = fields.Float(compute="_compute_profit", store=True, digits=(16, 2), string="Profit (USD)")
 
     # Which recipient numbers to print on documents
     tin_no_needed = fields.Boolean(string="Print TIN No")
@@ -246,6 +247,13 @@ class DarogOrder(models.Model):
                 "next": {"type": "ir.actions.client", "tag": "soft_reload"},
             },
         }
+
+    def action_send_documents(self):
+        """Open the Send by Email window for this order."""
+        self.ensure_one()
+        action = self.env["ir.actions.act_window"]._for_xml_id("DAROG.darog_send_documents_action")
+        action["context"] = {"default_order_id": self.id}
+        return action
 
     # ------------------------------------------------------------------
     # Helpers

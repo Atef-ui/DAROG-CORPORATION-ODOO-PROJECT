@@ -24,9 +24,9 @@
                     text-align: center;
                     margin-top: 0 !important;
                     padding: 0 !important;
-                    border-bottom: 2px solid black;
+                    border-bottom: 0px solid white; /* no line under the pad header */
                     /* Reduced from 20px */
-                    margin-bottom: 8px;
+                    margin-bottom: 0px;
                     justify-content: center;
                     align-items: center;
                     width: 100%;
@@ -72,12 +72,11 @@
                 <!-- LOGO SECTION END-->
                 <!-- MAIN BODY START-->
                 <!--
-                    IMPORTANT: padding-top here is the space reserved for your pre-printed pad header.
-                    Original was 150px. Adjust this single value to match your pad's header height exactly.
-                    Common values: 100px (small header) | 120px (medium) | 150px (large).
-                    If your pad header is shorter, reduce this first — it's the biggest space-saver.
+                    The space for the pad's header and footer now comes from the page margins
+                    (paper format "DAROG Pad" in reports/darog_pad.xml), so it repeats on every page.
+                    Was padding-top: 150px when printing on pre-printed pad paper.
                 -->
-                <div class="page" style="padding-top: 150px !important;">
+                <div class="page" style="padding-top: 0px !important;">
                     <!-- Reduced padding-top from 20px to 4px on heading div -->
                     <div style="text-align: center; padding-top: 40px;">
                         <h3 style="display: inline-block; text-align: center; padding-top: 0px !important; padding-bottom: 0px !important; border: 1px solid black;padding-left: 5px; padding-right: 5px;">
@@ -88,11 +87,11 @@
                     <table style="width: 100%; border-collapse: collapse; margin-top: 6px;" class="things">
                         <tr>
                             <td style="text-align: left; border-top: 1px solid black !important; border-bottom: 1px solid black !important;">NAME &amp; ADDRESS :-</td>
-                            <td colspan="2" style="border-top: 1px solid black !important;"><strong>NO : <span style="padding-left: 12px;">DC/CI/<t t-esc="o.incoming_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></span></strong></td>
+                            <td colspan="2" style="border-top: 1px solid black !important;"><strong>NO : <span style="padding-left: 12px;">DC/CI/<t t-esc="(o.incoming_date or o.invoice_date).year if (o.incoming_date or o.invoice_date) else ''"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></span></strong></td>
                         </tr>
                         <tr>
                             <td style="border-bottom: 0px solid white !important;"> </td>
-                            <td colspan="2" style="border-top: 1px solid black !important;"><strong>DATE : <span style="padding-left: 10px;"><span t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                            <td colspan="2" style="border-top: 1px solid black !important;"><strong>DATE : <span style="padding-left: 10px;"><span t-esc="o.delivery_challan_date and o.delivery_challan_date.strftime('%d.%m.%Y') or ''"/></span></strong></td>
                         </tr>
                         <tr>
                             <td style="border-bottom: 0px solid white; !important;">
@@ -101,7 +100,7 @@
                             </td>
                             <td colspan="2" class="hala">
                                 <strong> NO OF L/C : <span t-field="o.lc_no"/></strong><br/>
-                                <strong> DATE : <span t-esc="o.incoming_date.strftime('%d.%m.%Y')"/></strong>
+                                <strong> DATE : <span t-esc="o.incoming_date and o.incoming_date.strftime('%d.%m.%Y') or ''"/></strong>
                             </td>
                         </tr>
                         <tr>
@@ -123,7 +122,7 @@
                         <tr>
                             <td>
                                 <strong><span t-field="o.export_lc_no"/></strong>
-                                <strong style="padding-left: 20px;"> DATE : <span t-esc="o.export_date.strftime('%d.%m.%Y')"/></strong><br/>
+                                <strong style="padding-left: 20px;"> DATE : <span t-esc="o.export_date and o.export_date.strftime('%d.%m.%Y') or ''"/></strong><br/>
                                 <table style="border: 0px solid white !important; border-collapse: collapse;" class="halarpo">
                                     <t t-set="cnt" t-value="0"/>
                                     <t t-if="o.tin_no_needed">
@@ -242,8 +241,8 @@
                                 <strong>BENEFICIARY BIN NO: 000008386-301</strong>
                             </td>
                             <td colspan="2">
-                                <strong>DC/<t t-esc="o.incoming_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></strong>
-                                <strong style="padding-left: 20px;"> DATE : <span t-esc="o.invoice_date.strftime('%d.%m.%Y')"/></strong>
+                                <strong>DC/<t t-esc="(o.incoming_date or o.invoice_date).year if (o.incoming_date or o.invoice_date) else ''"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></strong>
+                                <strong style="padding-left: 20px;"> DATE : <span t-esc="o.invoice_date and o.invoice_date.strftime('%d.%m.%Y') or ''"/></strong>
                                 <!-- Removed <br/><br/> (was 2 blank lines), replaced with single br -->
                                 <br/><br/>
                                 <strong style="vertical-align: bottom;">HS. CODE : 6217.10.00</strong>

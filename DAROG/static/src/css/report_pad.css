@@ -1,0 +1,5 @@
+/* Let the pad (added behind Darog documents after printing) show through:
+   the page itself must not paint a white background. Plain paper looks the same. */
+html, body {
+    background: transparent !important;
+}

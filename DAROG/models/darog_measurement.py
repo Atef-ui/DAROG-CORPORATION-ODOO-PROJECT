@@ -30,7 +30,7 @@ class DarogMeasurement(models.Model):
         help="Purchase cost per unit for this order, in local currency. Filled in from the item "
              "when you choose it; change it here if this order's cost is different.",
     )
-    total_price = fields.Float(compute="_compute_total_price", digits=(16, 2), string="Amount")
+    total_price = fields.Float(compute="_compute_total_price", store=True, digits=(16, 2), string="Amount")
 
     @api.depends("items_id")
     def _compute_cost_price(self):

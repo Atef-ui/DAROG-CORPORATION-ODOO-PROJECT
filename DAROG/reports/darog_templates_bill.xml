@@ -29,8 +29,8 @@
                     <h1 style="text-align: center; font-weight: bold; padding-bottom: 20px; padding-top: 150px; padding-bottom: 70px;"><u>BILL OF EXCHANGE</u></h1>
                     <table style="border: 0px solid white;border-collapse: collapse; width: 100%;">
                         <tr>
-                            <td style="text-align:left;">DC/CI/<t t-esc="o.invoice_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></td>
-                            <td style="text-align: right;">Date: <t t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/></td>
+                            <td style="text-align:left;">DC/CI/<t t-esc="o.invoice_date.year if o.invoice_date else ''"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></td>
+                            <td style="text-align: right;">Date: <t t-esc="o.delivery_challan_date and o.delivery_challan_date.strftime('%d.%m.%Y') or ''"/></td>
                         </tr>
                         <tr>
                             <td style="text-align:left;">For <u>USD <t t-esc="o.total_amount"/></u></td>
@@ -47,10 +47,10 @@
                             <td><strong>Order the SUM of (USD$ <t t-esc="o.amount_in_words"/>) </strong> Value</td>
                         </tr>
                         <tr>
-                            <td><strong>Recieved &amp; Charge </strong>The Same To account Of <strong><t t-esc="o.reciepent_id.name.replace('.',',')"/> </strong><t t-esc="o.reciepent_id.address.replace(',',', ')"/>, DRAWN UNDER LETTER OF <strong>CREDIT NO: <t t-esc="o.lc_no"/> DATE: <t t-esc="o.incoming_date.strftime('%d.%m.%Y')"/>.</strong></td>
+                            <td><strong>Recieved &amp; Charge </strong>The Same To account Of <strong><t t-esc="o.reciepent_id.name.replace('.',',')"/> </strong><t t-esc="o.reciepent_id.address.replace(',',', ')"/>, DRAWN UNDER LETTER OF <strong>CREDIT NO: <t t-esc="o.lc_no"/> DATE: <t t-esc="o.incoming_date and o.incoming_date.strftime('%d.%m.%Y') or ''"/>.</strong></td>
                         </tr>
                         <tr>
-                            <td><strong>EXPORT L/C OR S/C NO : <span style="padding-right: 10px;"><t t-esc="o.export_lc_no"/> </span> DATE:<span style="padding-right: 10px;"><t t-esc="o.export_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                            <td><strong>EXPORT L/C OR S/C NO : <span style="padding-right: 10px;"><t t-esc="o.export_lc_no"/> </span> DATE:<span style="padding-right: 10px;"><t t-esc="o.export_date and o.export_date.strftime('%d.%m.%Y') or ''"/></span></strong></td>
                         </tr>
                     </table>
                     <div style="padding-top: 20px;">
@@ -199,8 +199,8 @@
                     <h1 style="text-align: center; font-weight: bold; padding-bottom: 20px; padding-top: 150px; padding-bottom: 70px;"><u>BILL OF EXCHANGE</u></h1>
                     <table style="border: 0px solid white;border-collapse: collapse; width: 100%;">
                         <tr>
-                            <td style="text-align:left;">DC/CI/<t t-esc="o.incoming_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></td>
-                            <td style="text-align: right;">Date : <t t-esc="o.delivery_challan_date.strftime('%d.%m.%Y')"/></td>
+                            <td style="text-align:left;">DC/CI/<t t-esc="(o.incoming_date or o.invoice_date).year if (o.incoming_date or o.invoice_date) else ''"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></td>
+                            <td style="text-align: right;">Date : <t t-esc="o.delivery_challan_date and o.delivery_challan_date.strftime('%d.%m.%Y') or ''"/></td>
                         </tr>
                         <tr>
                             <td style="text-align:left;">For <u>USD <t t-esc="o.total_amount"/></u></td>
@@ -217,10 +217,10 @@
                             <td><strong>Order the SUM of (USD$ <t t-esc="o.amount_in_words"/>) </strong> Value</td>
                         </tr>
                         <tr>
-                            <td><strong>Recieved &amp; Charge </strong>The Same To account Of <strong><t t-esc="o.reciepent_id.name.replace('.',',')"/></strong><t t-esc="o.reciepent_id.address.replace(',',', ')"/>, DRAWN UNDER LETTER OF <strong>CREDIT NO : <t t-esc="o.lc_no"/> DATE : <t t-esc="o.incoming_date.strftime('%d.%m.%Y')"/>.</strong></td>
+                            <td><strong>Recieved &amp; Charge </strong>The Same To account Of <strong><t t-esc="o.reciepent_id.name.replace('.',',')"/></strong><t t-esc="o.reciepent_id.address.replace(',',', ')"/>, DRAWN UNDER LETTER OF <strong>CREDIT NO : <t t-esc="o.lc_no"/> DATE : <t t-esc="o.incoming_date and o.incoming_date.strftime('%d.%m.%Y') or ''"/>.</strong></td>
                         </tr>
                         <tr>
-                            <td><strong>EXPORT L/C OR S/C NO : <span style="padding-right: 10px;"><t t-esc="o.export_lc_no"/></span> DATE : <span style="padding-right: 10px;"><t t-esc="o.export_date.strftime('%d.%m.%Y')"/></span></strong></td>
+                            <td><strong>EXPORT L/C OR S/C NO : <span style="padding-right: 10px;"><t t-esc="o.export_lc_no"/></span> DATE : <span style="padding-right: 10px;"><t t-esc="o.export_date and o.export_date.strftime('%d.%m.%Y') or ''"/></span></strong></td>
                         </tr>
                     </table>
                     <div style="padding-top: 20px;">

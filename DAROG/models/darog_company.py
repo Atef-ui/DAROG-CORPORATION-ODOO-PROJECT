@@ -28,3 +28,7 @@ class DarogCompany(models.Model):
         help="Local currency per 1 USD. Item cost prices are divided by this rate to compute profit.",
     )
     item_ids = fields.Many2many("darog.item", string="Items")
+    email_sender_name = fields.Char(
+        string="Email Sender Name",
+        help="Name people see as the sender of emailed documents. Leave empty to use the company name.",
+    )

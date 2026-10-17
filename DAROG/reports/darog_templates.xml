@@ -37,8 +37,8 @@
                     text-align: center;
                     margin-top:0 !important;
                     padding: 0 !important;
-                    border-bottom: 2px solid black;
-                    margin-bottom: 20px;
+                    border-bottom: 0px solid white; /* no line under the pad header */
+                    margin-bottom: 0px;
                     justify-content: center;
                     align-items: center;
                     width: 100%;
@@ -115,17 +115,17 @@
                     <!-- <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" alt="Comapny Logo" style="width:100%;height:auto;display:block"/> -->
                 </div>
                 <!-- LOGO SECTION END-->
-                <div class="page" style="padding-top: 180px !important;">
+                <div class="page" style="padding-top: 0px !important;">
                     <h3 style="text-align:center;"> <u><b>PROFORMA INVOICE</b></u></h3>
                 <div class="row">
                     <table class="table-des">
                         <tr>
                             <td style="text-align:left;border: 0px solid white !important;"><strong> TO: </strong></td>
-                            <td style="text-align:right; border: 0px solid white !important;"><strong> INVOICE NO: DC/<t t-esc="o.invoice_date.year"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></strong></td>
+                            <td style="text-align:right; border: 0px solid white !important;"><strong> INVOICE NO: DC/<t t-esc="o.invoice_date.year if o.invoice_date else ''"/>/<t t-esc="'{:03d}'.format(o.invoice_no)"/></strong></td>
                         </tr>
                         <tr>
                             <td style="text-align:left;border: 0px solid white !important;"><strong><span t-field="o.reciepent_id.name"/></strong></td>
-                            <td style="text-align:right; border: 0px solid white !important;"><strong>DATE: <span style="padding-left: 10px;" t-esc="o.invoice_date.strftime('%d.%m.%Y')"/></strong></td>
+                            <td style="text-align:right; border: 0px solid white !important;"><strong>DATE: <span style="padding-left: 10px;" t-esc="o.invoice_date and o.invoice_date.strftime('%d.%m.%Y') or ''"/></strong></td>
                         </tr>
                         <tr>
                             <td style="text-align:left;border: 0px solid white !important;"> <span t-field="o.reciepent_id.address"/></td>

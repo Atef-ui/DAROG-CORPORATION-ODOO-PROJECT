@@ -32,6 +32,7 @@
                     <group>
                         <group string="Contact">
                             <field name="address" placeholder="Factory address as printed on documents"/>
+                            <field name="email" widget="email" placeholder="Where their documents are emailed"/>
                         </group>
                         <group string="Registration Numbers">
                             <field name="bin_no"/>

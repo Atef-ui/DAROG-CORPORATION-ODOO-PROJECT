@@ -11,6 +11,7 @@ class DarogRecipient(models.Model):
 
     name = fields.Char(required=True)
     address = fields.Text()
+    email = fields.Char(help="Filled in as the To address when sending this recipient's documents by email.")
     bin_no = fields.Char(string="BIN No")
     tin_no = fields.Char(string="TIN No")
     irc_no = fields.Char(string="IRC No")
